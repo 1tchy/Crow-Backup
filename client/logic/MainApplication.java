@@ -1,4 +1,4 @@
-package client.logic;
+package logic;
 
 import java.io.IOException;
 
