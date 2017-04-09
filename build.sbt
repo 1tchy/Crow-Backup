@@ -34,3 +34,9 @@ javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked")
 javacOptions ++= Seq("-Xlint:unchecked")
 javacOptions ++= Seq("-Xlint:deprecation")
 javacOptions ++= Seq("-Xdiags:verbose")
+
+
+fork in run := true
+EclipseKeys.preTasks := Seq(compile in Compile)
+EclipseKeys.projectFlavor := EclipseProjectFlavor.Java           // Java project. Don't expect Scala IDE
+EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes 
