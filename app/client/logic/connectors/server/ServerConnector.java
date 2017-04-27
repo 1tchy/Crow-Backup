@@ -1,6 +1,7 @@
 package client.logic.connectors.server;
 
 import models.ServerInterface;
+import models.user.User;
 import play.Application;
 import play.ApplicationLoader;
 import play.Environment;
@@ -34,7 +35,32 @@ public class ServerConnector implements ServerInterface {
         return apiCall(String.class, name);
     }
 
-    private <R> CompletionStage<R> apiCall(Class<R> returnType, Object param) {
+    @Override
+    public CompletionStage<User> createUser(String mail, char[] password) {
+        return apiCall(User.class, mail, password);
+    }
+
+    @Override
+    public CompletionStage<User> login(String mail, char[] password) {
+        return apiCall(User.class, mail, password);
+    }
+
+    @Override
+    public CompletionStage<Void> logout(User user) {
+        return apiCall(Void.class, user);
+    }
+
+    @Override
+    public CompletionStage<User> getCurrentUser() {
+        return apiCall(User.class);
+    }
+
+    @Override
+    public CompletionStage<Void> changeUserPassword(User user, char[] newPassword) {
+        return apiCall(Void.class, user, newPassword);
+    }
+
+    private <R> CompletionStage<R> apiCall(Class<R> returnType, Object... param) {
         String methodName = getCallingMethod();
         Call method = controllers.routes.ApiController.apiCall(methodName);
         String url = method.absoluteURL(false, "localhost:9000");
