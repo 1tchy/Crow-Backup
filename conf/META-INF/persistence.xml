@@ -16,4 +16,15 @@
 		</properties>
 	</persistence-unit>
 
+	<persistence-unit name="testPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<non-jta-data-source>DefaultDS</non-jta-data-source>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+			<!-- Erzeugt die Datenbank -->
+			<!-- Variante: löscht Inhalt bei jedem Compile, erstellt jedoch immer alle Tabellen (korrekt) neu -->
+			<property name="hibernate.hbm2ddl.auto" value="create-only"/>
+		</properties>
+	</persistence-unit>
+
 </persistence>

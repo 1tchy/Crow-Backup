@@ -4,46 +4,40 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import play.Application;
 import play.db.jpa.JPAApi;
-import play.inject.guice.GuiceApplicationBuilder;
-import play.test.Helpers;
+import services.PersistenceService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.util.HashMap;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static play.test.Helpers.inMemoryDatabase;
 
-public abstract class WithTransaction {
+public abstract class WithTransaction extends WithApplication {
 
-    private static Application app;
     private static EntityManager em;
     private EntityTransaction tx;
-    protected static JPAApi jpaApi;
+    private static JPAApi jpaApi;
+    protected PersistenceService persistenceService;
 
     @BeforeClass
-    public static void startPlay() {
-        app = new GuiceApplicationBuilder().configure(new HashMap<>(inMemoryDatabase())).build();
+    public static void startDBConnection() {
         jpaApi = spy(app.injector().instanceOf(JPAApi.class));
         em = jpaApi.em("default");
         doReturn(em).when(jpaApi).em();
     }
 
     @AfterClass
-    public static void stopPlay() {
+    public static void stopDBConnection() {
         em.close();
         jpaApi.shutdown();
-        Helpers.stop(app);
     }
-
 
     @Before
     public void startTransaction() {
         tx = em.getTransaction();
         tx.begin();
+        persistenceService = new PersistenceService(jpaApi, app.configuration());
     }
 
     @After

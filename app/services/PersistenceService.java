@@ -1,6 +1,7 @@
 package services;
 
 import org.jetbrains.annotations.NotNull;
+import play.Configuration;
 import play.db.jpa.JPAApi;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 public class PersistenceService {
@@ -20,13 +22,14 @@ public class PersistenceService {
     private final EntityManagerFactory entityManagerFactory;
 
     @Inject
-    public PersistenceService(JPAApi jpaApi) {
+    public PersistenceService(JPAApi jpaApi, Configuration configuration) {
         this.jpaApi = jpaApi;
-        entityManagerFactory = Persistence.createEntityManagerFactory("defaultPersistenceUnit");
+        String persistenceUnitName = configuration.getString("jpa.default");
+        this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
     }
 
     @NotNull
-    public <T> CompletableFuture<T> asyncWithTransaction(boolean readOnly, Supplier<T> supplier) {
+    public <T> CompletionStage<T> asyncWithTransaction(boolean readOnly, Supplier<T> supplier) {
         return CompletableFuture.supplyAsync(() -> jpaApi.withTransaction("default", readOnly, supplier));
     }
 
@@ -49,6 +52,10 @@ public class PersistenceService {
         query.select(entity);
         query.where(criteriaBuilder.equal(entity.get(field), fieldValue));
         return jpaApi.em().createQuery(query).getSingleResult();
+    }
+
+    public <T> Optional<T> readOne(Class<T> type, long id) {
+        return readOne(type, "id", id);
     }
 
     public <T> Optional<T> readOne(Class<T> type, String field, Object fieldValue) {

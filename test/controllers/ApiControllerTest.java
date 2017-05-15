@@ -1,16 +1,17 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import helpers.WithApplication;
 import org.junit.Test;
 import play.api.mvc.Call;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.test.WithApplication;
 
 import java.util.concurrent.ExecutionException;
 
 import static helpers.GeneralHelpers.assertOptionalEquals;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.*;
 import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.route;
@@ -77,11 +78,6 @@ public class ApiControllerTest extends WithApplication {
         assertEquals(Http.Status.NO_CONTENT, actual.status());
     }
 
-    private Result simulateJsonRequest(Call target, String json) {
-        Http.RequestBuilder requestBuilder = new Http.RequestBuilder().bodyJson(Json.parse(json));
-        return route(requestBuilder.method(target.method()).uri(target.url()));
-    }
-
     @Test
     public void test_simple_createUser() {
         //Arrange
@@ -104,9 +100,7 @@ public class ApiControllerTest extends WithApplication {
         //Assert
         assertEquals(Http.Status.OK, actual.status());
         JsonNode actualJson = contentAsJson(actual);
-        assertTrue(actualJson.get("id").isNumber());
-        assertEquals("test1@test.com", actualJson.get("mail").asText());
-        assertTrue(actualJson.get("passwordHash").isNull());
+        assertThat(actualJson.asText(), startsWith("Token "));
     }
 
     @Test
@@ -119,15 +113,38 @@ public class ApiControllerTest extends WithApplication {
     }
 
     @Test
-    public void test_changeUserPassword() {
+    public void test_changeUserPassword_whenNotLogedIn() {
         //Arrange
-        String user = contentAsString(simulateJsonRequest(controllers.routes.ApiController.apiCall("createUser"), "[\"test2@test.com\", \"1234\"]"));
         //Act
-        Result actual = simulateJsonRequest(controllers.routes.ApiController.apiCall("changeUserPassword"), "[" + user + ", \"abcd\"]");
+        Result actual = simulateJsonRequest(controllers.routes.ApiController.apiCall("changeUserPassword"), "[\"abcd\"]");
         //Assert
-        assertEquals(Http.Status.NO_CONTENT, actual.status());
-        Result result = simulateJsonRequest(controllers.routes.ApiController.apiCall("login"), "[\"test2@test.com\", \"abcd\"]");
-        assertEquals(Http.Status.OK, result.status());
+        assertEquals(Http.Status.FORBIDDEN, actual.status());
+    }
+
+
+    @Test
+    public void test_changeUserPassword() throws ExecutionException, InterruptedException {
+        requestWithUser(controllers.routes.ApiController.apiCall("changeUserPassword"), "[\"abcd\"]", (user, actual) -> {
+            //Assert
+            assertEquals(Http.Status.NO_CONTENT, actual.status());
+            jpaApi.em().refresh(user);
+            assertNotEquals("#####", user.getPasswordHash());
+        });
+    }
+
+    @Test
+    public void test_logout() {
+        requestWithUser(controllers.routes.ApiController.apiCall("logout"), "[]", (user, actual) -> {
+            assertEquals(Http.Status.NO_CONTENT, actual.status());
+        });
+    }
+
+    @Test
+    public void test_getCurrentUser() {
+        requestWithUser(controllers.routes.ApiController.apiCall("getCurrentUser"), "[]", (user, actual) -> {
+            assertEquals(Http.Status.OK, actual.status());
+            assertEquals(Json.stringify(Json.toJson(user)), Json.stringify(contentAsJson(actual)));
+        });
     }
 
     private JsonNode contentAsJson(Result result) {

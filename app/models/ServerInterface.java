@@ -10,12 +10,12 @@ public interface ServerInterface {
 
     CompletionStage<User> createUser(String mail, char[] password);
 
-    CompletionStage<User> login(String mail, char[] password);
+    CompletionStage<String> login(String mail, char[] password);
 
-    CompletionStage<Void> logout(User user);
+    CompletionStage<Void> logout();
 
     CompletionStage<User> getCurrentUser();
 
-    CompletionStage<Void> changeUserPassword(User user, char[] newPassword);
+    CompletionStage<Void> changeUserPassword(char[] newPassword);
 
 }

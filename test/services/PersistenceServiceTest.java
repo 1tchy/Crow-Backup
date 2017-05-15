@@ -2,7 +2,6 @@ package services;
 
 import helpers.WithTransaction;
 import models.user.User;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.PersistenceException;
@@ -12,13 +11,6 @@ import static org.junit.Assert.assertNotEquals;
 
 public class PersistenceServiceTest extends WithTransaction {
 
-    private PersistenceService cut;
-
-    @Before
-    public void setup() {
-        cut = new PersistenceService(jpaApi);
-    }
-
     @Test
     public void test_that_persistGeneratesIds() throws Exception {
         //Arrange
@@ -26,7 +18,7 @@ public class PersistenceServiceTest extends WithTransaction {
         user.setMail("test@test.com");
         assertEquals(0, user.getId());
         //Act
-        cut.persist(user);
+        persistenceService.persist(user);
         //Assert
         assertNotEquals(0, user.getId());
     }
@@ -36,10 +28,10 @@ public class PersistenceServiceTest extends WithTransaction {
         //Arrange
         User user = new User();
         user.setMail("test@test.com");
-        cut.persist(user);
+        persistenceService.persist(user);
         long id = user.getId();
         //Act
-        User actual = cut.readUnique(User.class, id);
+        User actual = persistenceService.readUnique(User.class, id);
         //Assert
         assertEquals("test@test.com", actual.getMail());
     }
@@ -49,9 +41,9 @@ public class PersistenceServiceTest extends WithTransaction {
         //Arrange
         User user = new User();
         user.setMail("test@test.com");
-        cut.persist(user);
+        persistenceService.persist(user);
         //Act
-        User actual = cut.readUnique(User.class, "mail", "test@test.com");
+        User actual = persistenceService.readUnique(User.class, "mail", "test@test.com");
         //Assert
         assertEquals("test@test.com", actual.getMail());
     }
@@ -61,11 +53,11 @@ public class PersistenceServiceTest extends WithTransaction {
         //Arrange
         User user = new User();
         user.setMail("test@test.com");
-        cut.persist(user);
+        persistenceService.persist(user);
         //Act
-        cut.detach(user);
+        persistenceService.detach(user);
         //Assert
-        cut.persist(user);
+        persistenceService.persist(user);
     }
 
 }

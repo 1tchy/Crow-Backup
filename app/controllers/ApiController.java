@@ -4,34 +4,46 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import controllers.actions.AuthenticatedRequest;
+import controllers.actions.ExplicitAction;
+import controllers.actions.WithExplicitAction;
+import controllers.actions.WithUser;
 import models.ServerInterface;
 import models.user.User;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import play.db.jpa.Transactional;
+import play.inject.Injector;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
+import services.LoginTokenService;
 import services.PasswordService;
 import services.PersistenceService;
 
 import javax.inject.Inject;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 public class ApiController extends Controller implements ServerInterface {
 
     private final PersistenceService persistenceService;
     private final PasswordService passwordService;
+    private final LoginTokenService loginTokenService;
+    private final Injector injector;
 
     @Inject
-    public ApiController(PersistenceService persistenceService, PasswordService passwordService) {
+    public ApiController(PersistenceService persistenceService, PasswordService passwordService, LoginTokenService loginTokenService, Injector injector) {
         this.persistenceService = persistenceService;
         this.passwordService = passwordService;
+        this.loginTokenService = loginTokenService;
+        this.injector = injector;
     }
 
     @Transactional
@@ -49,15 +61,37 @@ public class ApiController extends Controller implements ServerInterface {
             } catch (JsonProcessingException e) {
                 return CompletableFuture.completedFuture(badRequest(json + " ist ungültig für " + methodName));
             }
-            try {
-                @SuppressWarnings("unchecked") CompletionStage<?> result = (CompletionStage<?>) method.invoke(this, parameters);
-                return result.thenApplyAsync(resultJsonObject -> resultJsonObject == null ? noContent() : ok(Json.toJson(resultJsonObject)));
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                return CompletableFuture.completedFuture(badRequest("Fehler QJRgagH7XSUwuAPn"));
-            }
+            return callWithOrWithoutExplicitAnnotation(method, parameters);
         } catch (NoSuchMethodException e) {
             return CompletableFuture.completedFuture(notFound(methodName));
         }
+    }
+
+    private CompletionStage<Result> callWithOrWithoutExplicitAnnotation(Method method, Object[] parameters) {
+        Supplier<CompletionStage<Result>> call = () -> {
+            try {
+                return mapResult((CompletionStage<?>) method.invoke(this, parameters));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                return CompletableFuture.completedFuture(badRequest("Fehler QJRgagH7XSUwuAPn"));
+            }
+        };
+
+        for (Annotation methodAnnotation : method.getDeclaredAnnotations()) {
+            WithExplicitAction withExplicitAction = methodAnnotation.annotationType().getDeclaredAnnotation(WithExplicitAction.class);
+            if (withExplicitAction != null) {
+                ExplicitAction explicitAction = injector.instanceOf(withExplicitAction.value());
+                return explicitAction.call(ctx(), ctx -> {
+                    Http.Context.current.set(ctx);
+                    return call.get();
+                });
+            }
+        }
+        //else (Methode nicht annotiert)
+        return call.get();
+    }
+
+    private CompletionStage<Result> mapResult(CompletionStage<?> promise) {
+        return promise.thenApplyAsync(resultJsonObject -> resultJsonObject == null ? noContent() : ok(Json.toJson(resultJsonObject)));
     }
 
     private Object[] mapJsonListToObjects(ArrayNode nodes, Class<?>[] types) throws JsonProcessingException {
@@ -102,11 +136,11 @@ public class ApiController extends Controller implements ServerInterface {
     }
 
     @Override
-    public CompletionStage<User> login(String mail, char[] password) {
+    public CompletionStage<String> login(String mail, char[] password) {
         return persistenceService.asyncWithTransaction(true, () -> {
             Optional<User> user = persistenceService.readOne(User.class, "mail", mail);
             if (user.isPresent() && passwordService.isPasswordCorrect(user.get().getPasswordHash(), password)) {
-                return toUserForClient(user.get()); //todo: login merken
+                return loginTokenService.create(user.get());
             } else {
                 return null;
             }
@@ -114,19 +148,23 @@ public class ApiController extends Controller implements ServerInterface {
     }
 
     @Override
-    public CompletionStage<Void> logout(User user) {
-        throw new NotImplementedException("logout " + user);
+    public CompletionStage<Void> logout() {
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
+    @WithUser
     public CompletionStage<User> getCurrentUser() {
-        throw new NotImplementedException("getCurrentUser");
+        AuthenticatedRequest request = (AuthenticatedRequest) request();
+        return CompletableFuture.completedFuture(request.getAuthenticatedUser());
     }
 
     @Override
-    public CompletionStage<Void> changeUserPassword(User user, char[] newPassword) {
+    @WithUser
+    public CompletionStage<Void> changeUserPassword(char[] newPassword) {
+        AuthenticatedRequest request = (AuthenticatedRequest) request();
         return persistenceService.asyncWithTransaction(false, () -> {
-            User dbUser = persistenceService.readUnique(User.class, user.getId());
+            User dbUser = persistenceService.readUnique(User.class, request.getAuthenticatedUser().getId());
             dbUser.setPasswordHash(passwordService.createHash(newPassword));
             persistenceService.persist(dbUser);
             return null;

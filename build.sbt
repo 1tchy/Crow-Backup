@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
   //see latest version under: https://mvnrepository.com/artifact/de.mkammerer/argon2-jvm
   "de.mkammerer"              % "argon2-jvm"               % "2.2",
   //see latest version under: http://mvnrepository.com/artifact/org.mockito/mockito-all
-  "org.mockito"               % "mockito-all"              % "1.10.19" % Test,
+  "org.mockito"               % "mockito-core"             % "2.7.22" % Test,
   //see latest version under: http://mvnrepository.com/artifact/junit/junit
   "junit"                     % "junit"                    % "4.12" % Test,
   //see latest versions under: http://mvnrepository.com/artifact/org.hamcrest/java-hamcrest
