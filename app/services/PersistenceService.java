@@ -1,15 +1,13 @@
 package services;
 
 import org.jetbrains.annotations.NotNull;
-import play.Configuration;
+import org.jetbrains.annotations.Nullable;
 import play.db.jpa.JPAApi;
+import play.libs.F;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -19,13 +17,10 @@ import java.util.function.Supplier;
 public class PersistenceService {
 
     private final JPAApi jpaApi;
-    private final EntityManagerFactory entityManagerFactory;
 
     @Inject
-    public PersistenceService(JPAApi jpaApi, Configuration configuration) {
+    public PersistenceService(JPAApi jpaApi) {
         this.jpaApi = jpaApi;
-        String persistenceUnitName = configuration.getString("jpa.default");
-        this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
     }
 
     @NotNull
@@ -33,8 +28,17 @@ public class PersistenceService {
         return CompletableFuture.supplyAsync(() -> jpaApi.withTransaction("default", readOnly, supplier));
     }
 
-    public void persist(Object entity) {
-        jpaApi.em().persist(entity);
+    public CompletionStage<Void> asyncWithTransaction(Runnable runnable) {
+        return asyncWithTransaction(false, () -> {
+            runnable.run();
+            return null;
+        });
+    }
+
+    public void persist(Object... entities) {
+        for (Object entity : entities) {
+            jpaApi.em().persist(entity);
+        }
     }
 
     public void detach(Object entity) {
@@ -42,33 +46,43 @@ public class PersistenceService {
     }
 
     public <T> T readUnique(Class<T> type, long id) {
-        return readUnique(type, "id", id);
-    }
-
-    public <T> T readUnique(Class<T> type, String field, Object fieldValue) {
-        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
-        CriteriaQuery<T> query = criteriaBuilder.createQuery(type);
-        Root<T> entity = query.from(type);
-        query.select(entity);
-        query.where(criteriaBuilder.equal(entity.get(field), fieldValue));
-        return jpaApi.em().createQuery(query).getSingleResult();
+        Optional<T> t = readOne(type, id);
+        if (!t.isPresent()) {
+            throw new NoResultException("No " + type + " for ID " + id);
+        }
+        return t.get();
     }
 
     public <T> Optional<T> readOne(Class<T> type, long id) {
-        return readOne(type, "id", id);
+        return Optional.ofNullable(jpaApi.em().find(type, id));
     }
 
-    public <T> Optional<T> readOne(Class<T> type, String field, Object fieldValue) {
-        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
-        CriteriaQuery<T> query = criteriaBuilder.createQuery(type);
-        Root<T> entity = query.from(type);
-        query.select(entity);
-        query.where(criteriaBuilder.equal(entity.get(field), fieldValue));
-        List<T> results = jpaApi.em().createQuery(query).setMaxResults(1).getResultList();
-        if (results.isEmpty()) {
+    public <T> Optional<T> readOne(Class<T> type, F.Tuple<String, Object> whereFieldHasValue) {
+        if (!whereFieldHasValue._1.matches("\\w+")) {//for security reasons (helps preventing SQL injection)
+            throw new RuntimeException(whereFieldHasValue._1 + " is not valid");
+        }
+        String query = "SELECT t FROM " + type.getName() + " AS t WHERE " + whereFieldHasValue._1 + " = ?1";
+        return readOne(type, query, whereFieldHasValue._2);
+    }
+
+    public <T> Optional<T> readOne(Class<T> type, String query, Object... params) {
+        List<T> resultList = read(type, query, 1, params);
+        if (resultList.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(results.get(0));
+            return Optional.of(resultList.get(0));
         }
     }
+
+    public <T> List<T> read(Class<T> type, String query, @Nullable Integer limit, @NotNull Object... params) {
+        TypedQuery<T> q = jpaApi.em().createQuery(query, type);
+        for (int i = 1; i <= params.length; i++) {
+            q.setParameter(i, params[i - 1]);
+        }
+        if (limit != null) {
+            q.setMaxResults(limit);
+        }
+        return q.getResultList();
+    }
+
 }

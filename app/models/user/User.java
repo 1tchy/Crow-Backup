@@ -1,5 +1,6 @@
 package models.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.BaseEntity;
 
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 public class User extends BaseEntity {
 
     private String mail;
+    @JsonIgnore
     private String passwordHash;
 
     public String getMail() {

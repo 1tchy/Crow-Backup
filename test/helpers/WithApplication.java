@@ -1,5 +1,6 @@
 package helpers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.user.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -7,6 +8,7 @@ import play.Application;
 import play.api.mvc.Call;
 import play.db.jpa.JPAApi;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.libs.F;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -19,8 +21,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static play.test.Helpers.inMemoryDatabase;
-import static play.test.Helpers.route;
+import static helpers.GeneralHelpers.assertOptionalEquals;
+import static play.test.Helpers.*;
 
 public class WithApplication {
 
@@ -76,22 +78,74 @@ public class WithApplication {
         });
     }
 
-    protected static void requestWithUser(Call target, String json, BiConsumer<User, Result> asserter) {
+    /**
+     * Test mit drei Teilen, die teilweise eine aktive Transaktion haben
+     *
+     * @param arrange:  1. Teil; Bereitet den Test vor, hat eine aktive Transaktion (zum Testdaten aufsetzen)
+     * @param act:      2. Teil; Effektiver Test, hat keine eigene Transaktion (zum z.B. simulateJsonRequest() aufrufen)
+     * @param asserter: 3. Teil; Überprüft den Test, hat wieder eine aktive Transaktion (zum Verifizieren von Daten in der Datenbank)
+     */
+    protected static <T> void runThreeStepTestWithUser(Supplier<T> arrange, Function<T, Result> act, BiConsumer<T, Result> asserter) {
+        runThreeStepTest(() -> {
+            User user = new User();
+            user.setMail("tets3@test.com");
+            user.setPasswordHash("#####");
+            jpaApi.em().persist(user);
+            return new F.Tuple<>(user, arrange.get());
+        }, tuple -> {
+            return act.apply(tuple._2);
+        }, (tuple, result) -> {
+            asserter.accept(tuple._2, result);
+        });
+    }
+
+    protected static <T> void requestWithUser(Function<User, T> arrange, Call target, String json, TriConsumer<User, T, Result> asserter) {
+        requestWithUser(arrange, target, any -> json, asserter);
+    }
+
+    protected static <T> void requestWithUser(Function<User, T> arrange, Call target, Function<T, String> json, TriConsumer<User, T, Result> asserter) {
         runThreeStepTest(() -> {
             //Arrange
             User user = new User();
             user.setMail("tets3@test.com");
             user.setPasswordHash("#####");
             jpaApi.em().persist(user);
-            return user;
-        }, user -> {
+            return new F.Tuple<>(user, arrange.apply(user));
+        }, tuple -> {
             //Act
-            return simulateJsonRequest(target, json, user.getId() + "");
-        }, ((user, result) -> {
+            return simulateJsonRequest(target, json.apply(tuple._2), tuple._1.getId() + "");
+        }, ((tuple, result) -> {
             //Assert
-            //noinspection Convert2MethodRef
+            asserter.accept(tuple._1, tuple._2, result);
+        }));
+
+    }
+
+    protected static void requestWithUser(Call target, String json, BiConsumer<User, Result> asserter) {
+        requestWithUser(any -> null, target, json, ((user, o, result) -> {
             asserter.accept(user, result);
         }));
+    }
+
+    protected JsonNode contentAsJson(Result result) {
+        assertOptionalEquals("application/json", result.contentType());
+        return Json.parse(contentAsString(result));
+    }
+
+    protected void persist(Object obj1, Object... moreObjects) {
+        persist(obj1);
+        for (Object objN : moreObjects) {
+            persist(objN);
+        }
+    }
+
+    protected <O> O persist(O obj) {
+        jpaApi.em().persist(obj);
+        return obj;
+    }
+
+    public interface TriConsumer<T, U, V> {
+        void accept(T t, U u, V v);
     }
 
 }

@@ -4,8 +4,7 @@ import controllers.actions.AuthenticatedRequest;
 import controllers.actions.WithUser;
 import models.interfaces.UserServerInterface;
 import models.user.User;
-import org.jetbrains.annotations.NotNull;
-import play.inject.Injector;
+import play.libs.F;
 import play.mvc.Controller;
 import services.LoginTokenService;
 import services.PasswordService;
@@ -23,7 +22,7 @@ public class UserApiController implements UserServerInterface {
     private final LoginTokenService loginTokenService;
 
     @Inject
-    public UserApiController(PersistenceService persistenceService, PasswordService passwordService, LoginTokenService loginTokenService, Injector injector) {
+    public UserApiController(PersistenceService persistenceService, PasswordService passwordService, LoginTokenService loginTokenService) {
         this.persistenceService = persistenceService;
         this.passwordService = passwordService;
         this.loginTokenService = loginTokenService;
@@ -37,21 +36,14 @@ public class UserApiController implements UserServerInterface {
             user.setMail(mail);
             user.setPasswordHash(passwordService.createHash(password));
             persistenceService.persist(user);
-            return toUserForClient(user);
+            return user;
         });
-    }
-
-    @NotNull
-    private User toUserForClient(User user) {
-        persistenceService.detach(user);
-        user.setPasswordHash(null);
-        return user;
     }
 
     @Override
     public CompletionStage<String> login(String mail, char[] password) {
         return persistenceService.asyncWithTransaction(true, () -> {
-            Optional<User> user = persistenceService.readOne(User.class, "mail", mail);
+            Optional<User> user = persistenceService.readOne(User.class, new F.Tuple<>("mail", mail));
             if (user.isPresent() && passwordService.isPasswordCorrect(user.get().getPasswordHash(), password)) {
                 return loginTokenService.create(user.get());
             } else {

@@ -37,7 +37,7 @@ public abstract class WithTransaction extends WithApplication {
     public void startTransaction() {
         tx = em.getTransaction();
         tx.begin();
-        persistenceService = new PersistenceService(jpaApi, app.configuration());
+        persistenceService = new PersistenceService(jpaApi);
     }
 
     @After
