@@ -7,6 +7,8 @@ import models.user.FriendLink;
 import models.user.Friendship;
 import models.user.User;
 import org.junit.Test;
+import play.libs.F;
+import play.libs.Json;
 import play.mvc.Http;
 
 import static org.junit.Assert.*;
@@ -78,7 +80,7 @@ public class FriendshipApiControllerTest extends WithApplication {
     }
 
     @Test
-    public void test_list_withOneOpenRequest() {
+    public void test_list_withOneFriendship() {
         requestWithUser(user -> {
                     //Arrange
                     User otherUser = new User();
@@ -96,6 +98,70 @@ public class FriendshipApiControllerTest extends WithApplication {
                     assertTrue(actualJsonElement.get("confirmed").asBoolean());
                     assertTrue(actualJsonElement.get("links").isArray());
                     assertEquals(2, actualJsonElement.get("links").size());
+                }));
+    }
+
+    @Test
+    public void test_delete_withOneFriendship() {
+        requestWithUser(user -> {
+                    //Arrange
+                    User otherUser = new User();
+                    otherUser.setMail("tets2@test.com");
+                    FriendLink link1 = persist(new FriendLink(otherUser, user));
+                    FriendLink link2 = persist(new FriendLink(user, otherUser));
+                    Friendship friendship = new Friendship(link1, link2);
+                    persist(otherUser, friendship);
+                    //Check Arrange
+                    assertNotNull(jpaApi.em().find(Friendship.class, friendship.getId()));
+                    assertNotNull(jpaApi.em().find(FriendLink.class, link1.getId()));
+                    assertNotNull(jpaApi.em().find(FriendLink.class, link2.getId()));
+                    return new F.Tuple4<>(otherUser, link1.getId(), link2.getId(), friendship.getId());
+                    //Act
+                }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "deleteFriend"), (tuple) -> Json.stringify(Json.toJson(new User[]{tuple._1})),
+                ((user, tuple, result) -> {
+                    //Assert
+                    assertEquals(Http.Status.NO_CONTENT, result.status());
+                    assertNull(jpaApi.em().find(FriendLink.class, tuple._2));
+                    assertNull(jpaApi.em().find(FriendLink.class, tuple._3));
+                    assertNull(jpaApi.em().find(Friendship.class, tuple._4));
+                }));
+    }
+
+    @Test
+    public void test_delete_withOpenRequest() {
+        requestWithUser(user -> {
+                    //Arrange
+                    User otherUser = new User();
+                    otherUser.setMail("tets2@test.com");
+                    FriendLink link2 = persist(new FriendLink(user, otherUser));
+                    Friendship friendship = new Friendship(link2);
+                    persist(otherUser, friendship);
+                    //Check Arrange
+                    assertNotNull(jpaApi.em().find(Friendship.class, friendship.getId()));
+                    assertNotNull(jpaApi.em().find(FriendLink.class, link2.getId()));
+                    return new F.Tuple3<>(otherUser, link2.getId(), friendship.getId());
+                    //Act
+                }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "deleteFriend"), (tuple) -> Json.stringify(Json.toJson(new User[]{tuple._1})),
+                ((user, tuple, result) -> {
+                    //Assert
+                    assertEquals(Http.Status.NO_CONTENT, result.status());
+                    assertNull(jpaApi.em().find(FriendLink.class, tuple._2));
+                    assertNull(jpaApi.em().find(Friendship.class, tuple._3));
+                }));
+    }
+
+    @Test
+    public void test_delete_withoutFriendship() {
+        requestWithUser(user -> {
+                    //Arrange
+                    User otherUser = new User();
+                    otherUser.setMail("tets2@test.com");
+                    return persist(otherUser);
+                    //Act
+                }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "deleteFriend"), (otherUser) -> Json.stringify(Json.toJson(new User[]{otherUser})),
+                ((user, otherUser, result) -> {
+                    //Assert
+                    assertEquals(Http.Status.NO_CONTENT, result.status());
                 }));
     }
 

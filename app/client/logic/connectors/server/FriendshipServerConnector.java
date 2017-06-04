@@ -31,4 +31,9 @@ public class FriendshipServerConnector extends AbstractServerConnector implement
         return apiCall(Friendship[].class);
     }
 
+    @Override
+    public CompletionStage<Void> deleteFriend(User user) {
+        return apiCall(Void.class, user);
+    }
+
 }

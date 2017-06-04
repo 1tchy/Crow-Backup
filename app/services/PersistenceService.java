@@ -85,4 +85,8 @@ public class PersistenceService {
         return q.getResultList();
     }
 
+    public void remove(Object entity) {
+        jpaApi.em().remove(entity);
+    }
+
 }

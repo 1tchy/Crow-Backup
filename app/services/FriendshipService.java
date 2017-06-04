@@ -59,4 +59,21 @@ public class FriendshipService {
             }).toArray(Friendship[]::new);
         });
     }
+
+    public CompletionStage<Void> removeWithTransaction(User fromUser, long toUserId) {
+        return persistenceService.asyncWithTransaction(() -> {
+            User toUser = persistenceService.readUnique(User.class, toUserId);
+            removeFriendship(fromUser, toUser);
+        });
+    }
+
+    private void removeFriendship(User fromUser, User toUser) {
+        Optional<Friendship> friendship = searchFriendship(fromUser, toUser);
+        if (friendship.isPresent()) {
+            for (FriendLink friendLink : friendship.get().getLinks()) {
+                persistenceService.remove(friendLink);
+            }
+            persistenceService.remove(friendship.get());
+        }
+    }
 }

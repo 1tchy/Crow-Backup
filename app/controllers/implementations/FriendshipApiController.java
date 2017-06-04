@@ -40,4 +40,11 @@ public class FriendshipApiController implements FriendshipServerInterface {
         AuthenticatedRequest request = (AuthenticatedRequest) Controller.request();
         return friendshipService.listForUserWithTransaction(request.getAuthenticatedUser(), false);
     }
+
+    @Override
+    @WithUser
+    public CompletionStage<Void> deleteFriend(User user) {
+        AuthenticatedRequest request = (AuthenticatedRequest) Controller.request();
+        return friendshipService.removeWithTransaction(request.getAuthenticatedUser(), user.getId());
+    }
 }

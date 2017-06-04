@@ -61,4 +61,17 @@ public class FriendshipServerConnectorTest extends AbstractServerConnectorTest {
         assertEquals(1, actual[0].getLinks().size());
     }
 
+    @Test
+    public void test_remove() throws ExecutionException, InterruptedException {
+        //Arrange
+        User user = new User();
+        user.setMail("test@example.com");
+        //Act
+        CompletionStage<Void> actualPromise = cut.deleteFriend(user);
+        //Assert
+        verify(request).setBody(eq(Json.toJson(new User[]{user})));
+        Void actual = actualPromise.toCompletableFuture().get();
+        assertNull(actual);
+    }
+
 }

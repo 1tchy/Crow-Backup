@@ -70,6 +70,7 @@ public class WithApplication {
             //Arrange
             T t = arrange.get();
             jpaApi.em().getTransaction().commit();
+            jpaApi.em().clear();
             //Act
             Result actual = act.apply(t);
             //Assert

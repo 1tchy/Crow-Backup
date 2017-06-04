@@ -13,4 +13,6 @@ public interface FriendshipServerInterface {
 
     CompletionStage<Friendship[]> openRequests();
 
+    CompletionStage<Void> deleteFriend(User user);
+
 }

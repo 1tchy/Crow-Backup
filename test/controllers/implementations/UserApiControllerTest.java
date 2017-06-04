@@ -3,6 +3,7 @@ package controllers.implementations;
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.WithApplication;
 import models.interfaces.UserServerInterface;
+import models.user.User;
 import org.junit.Test;
 import play.libs.Json;
 import play.mvc.Http;
@@ -64,7 +65,7 @@ public class UserApiControllerTest extends WithApplication {
         requestWithUser(routes.BaseApiController.apiCall(UserServerInterface.class.getSimpleName(), "changeUserPassword"), "[\"abcd\"]", (user, actual) -> {
             //Assert
             assertEquals(Http.Status.NO_CONTENT, actual.status());
-            jpaApi.em().refresh(user);
+            user = jpaApi.em().find(User.class, user.getId());
             assertNotEquals("#####", user.getPasswordHash());
         });
     }
