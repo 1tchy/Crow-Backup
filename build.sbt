@@ -31,7 +31,9 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq(
   // IDEA Nullable Annotations
-  "idea nullable" at "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases"
+  "idea nullable" at "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases",
+  // Teamcity Resolution Fix
+  Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.com/typesafe/ivy-releases"))(Resolver.ivyStylePatterns)
 )
 
 ///////// blames you, if you use unchecked conversions and sets Java to 1.8
