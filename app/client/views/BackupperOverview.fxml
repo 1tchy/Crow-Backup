@@ -5,19 +5,28 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewmodels.EventHandlingController">
    <children>
       <AnchorPane id="header" fx:id="anchorPane_Toolbar" prefHeight="200.0" prefWidth="200.0" stylesheets="@stylesheets/HeaderStyle.css" AnchorPane.bottomAnchor="265.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label id="logo-text" fx:id="label_Logo" layoutX="14.0" layoutY="8.0" stylesheets="@stylesheets/HeaderStyle.css" text="Backupper" />
-            <Button fx:id="button_Help" layoutX="530.0" layoutY="4.0" mnemonicParsing="false" stylesheets="@stylesheets/ButtonStyles.css" text="Hilfe"/>
-            <Button fx:id="button_Settings" layoutX="413.0" layoutY="4.0" mnemonicParsing="false" stylesheets="@stylesheets/ButtonStyles.css" text="Einstellungen" />
-            <Button fx:id="button_Login" layoutX="314.0" layoutY="4.0" mnemonicParsing="false" stylesheets="@stylesheets/ButtonStyles.css" text="Anmelden" />
+            <Label id="logo-text" fx:id="label_Logo" layoutX="14.0" layoutY="14.0" stylesheets="@stylesheets/HeaderStyle.css" text="Backupper" />
+            <Button fx:id="button_Help" layoutX="544.0" layoutY="4.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="55.0" stylesheets="@stylesheets/ButtonStyles.css" textAlignment="CENTER" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="542.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="4.0">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/white-help-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="button_Settings" layoutX="425.0" layoutY="4.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="113.0" stylesheets="@stylesheets/ButtonStyles.css" text="Einstellungen" />
+            <Button fx:id="button_Login" layoutX="326.0" layoutY="4.0" mnemonicParsing="false" stylesheets="@stylesheets/ButtonStyles.css" text="Anmelden" />
          </children>
       </AnchorPane>
-      <SplitPane fx:id="splitPane_Overview" dividerPositions="0.29797979797979796" layoutY="35.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+      <SplitPane fx:id="splitPane_Overview" dividerPositions="0.29797979797979796" layoutY="40.0" prefHeight="268.0" prefWidth="605.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
         <items>
           <AnchorPane fx:id="leftAnchorPane_Backups" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
