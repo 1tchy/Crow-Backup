@@ -2,7 +2,7 @@ package controllers.implementations;
 
 import controllers.actions.AuthenticatedRequest;
 import controllers.actions.WithUser;
-import models.interfaces.FriendshipServerInterface;
+import interfaces.FriendshipServerInterface;
 import models.user.Friendship;
 import models.user.User;
 import play.mvc.Controller;

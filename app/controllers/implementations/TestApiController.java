@@ -1,6 +1,6 @@
 package controllers.implementations;
 
-import models.interfaces.TestServerInterface;
+import interfaces.TestServerInterface;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;

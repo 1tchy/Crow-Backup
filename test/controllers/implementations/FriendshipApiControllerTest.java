@@ -1,8 +1,9 @@
 package controllers.implementations;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.routes;
 import helpers.WithApplication;
-import models.interfaces.FriendshipServerInterface;
+import interfaces.FriendshipServerInterface;
 import models.user.FriendLink;
 import models.user.Friendship;
 import models.user.User;

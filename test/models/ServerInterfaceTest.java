@@ -18,7 +18,7 @@ public class ServerInterfaceTest {
     @Test
     public void test_thatAllMethodsReturnPromise() {
         //Arrange
-        Set<Class<?>> interfaces = new Reflections("models.interfaces", new SubTypesScanner(false)).getSubTypesOf(Object.class);
+        Set<Class<?>> interfaces = new Reflections("interfaces", new SubTypesScanner(false)).getSubTypesOf(Object.class);
         assertThat(interfaces, not(empty()));
         for (Class<?> anInterface : interfaces) {
             for (Method method : anInterface.getDeclaredMethods()) {

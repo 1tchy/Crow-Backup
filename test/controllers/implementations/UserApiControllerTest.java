@@ -1,8 +1,9 @@
 package controllers.implementations;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.routes;
 import helpers.WithApplication;
-import models.interfaces.UserServerInterface;
+import interfaces.UserServerInterface;
 import models.user.User;
 import org.junit.Test;
 import play.libs.Json;

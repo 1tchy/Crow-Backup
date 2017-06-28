@@ -2,7 +2,7 @@ package controllers.implementations;
 
 import controllers.actions.AuthenticatedRequest;
 import controllers.actions.WithUser;
-import models.interfaces.UserServerInterface;
+import interfaces.UserServerInterface;
 import models.user.User;
 import play.libs.F;
 import play.mvc.Controller;

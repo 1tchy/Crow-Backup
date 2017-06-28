@@ -18,7 +18,7 @@
                <graphic>
                   <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/white-help-icon.png" />
+                        <Image url="@resources/white-help-icon.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
