@@ -39,6 +39,25 @@ resolvers ++= Seq(
 ///////// blames you, if you use unchecked conversions and sets Java to 1.8
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked")
 
+//Task zum kopieren von Dateien der app ins target-Verzeichnis
+lazy val toTargetCopyTask = inputKey[Unit]("compileCopyTask")
+toTargetCopyTask := {
+  val args = complete.DefaultParsers.spaceDelimited("<arg>").parsed
+  val dir = args.head
+  println(s"Start copying $dir")
+  val mainVersion = scalaVersion.value.split("""\.""").take(2).mkString(".")
+  val from = (javaSource in Compile).value / dir
+  val to = target.value / ("scala-" + mainVersion) / "classes" / dir
+  to.mkdirs()
+  IO.copyDirectory(from,to)
+  println(s"$from -> $to ...done.")
+}
+//client.views ins target kopieren
+compile in Compile := {
+  toTargetCopyTask.toTask(" client/views").value
+  (compile in Compile).value
+}
+
 // display deprecated or poorly formed Java
 javacOptions ++= Seq("-Xlint:unchecked")
 javacOptions ++= Seq("-Xlint:deprecation")
