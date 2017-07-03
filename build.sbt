@@ -21,7 +21,13 @@ libraryDependencies ++= Seq(
   "org.jetbrains"             % "annotations"              % "7.0.2",
   //see latest version under: https://mvnrepository.com/artifact/de.mkammerer/argon2-jvm
   "de.mkammerer"              % "argon2-jvm"               % "2.2",
-  //see latest version under: http://mvnrepository.com/artifact/org.mockito/mockito-core
+  //see latest version under: https://mvnrepository.com/artifact/org.testfx/testfx-core
+  "org.testfx"                % "testfx-core"              % "4.0.6-alpha" % Test,
+  //see latest version under: https://mvnrepository.com/artifact/org.testfx/testfx-junit
+  "org.testfx"                % "testfx-junit"             % "4.0.6-alpha" % Test,
+  //see latest version under: https://mvnrepository.com/artifact/org.testfx/openjfx-monocle
+  "org.testfx"                % "openjfx-monocle"          % "8u76-b04" % Test,
+//see latest version under: http://mvnrepository.com/artifact/org.mockito/mockito-core
   "org.mockito"               % "mockito-core"             % "2.8.9" % Test,
   //see latest version under: http://mvnrepository.com/artifact/junit/junit
   "junit"                     % "junit"                    % "4.12" % Test,

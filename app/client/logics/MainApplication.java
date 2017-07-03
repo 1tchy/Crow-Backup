@@ -1,7 +1,5 @@
 package client.logics;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,60 +7,63 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class MainApplication extends Application {
 
 	private Stage primaryStage;
-    private BorderPane rootLayout;
-    
+	private BorderPane rootLayout;
+
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Backupper");
-        
-        initRootLayout();
+		this.primaryStage.setTitle("Backupper");
 
-        showOverview();
-        
-        showScene();
+		initRootLayout();
+
+		showOverview();
+
+		showScene();
 	}
-	
-	public void showScene(){
-		 Scene scene = new Scene(rootLayout);
-         primaryStage.setScene(scene);
-         primaryStage.show();
+
+	private void showScene() {
+		Scene scene = new Scene(rootLayout);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
-	
+
 	/**
-     * Initializes the root layout.
-     */
-    public void initRootLayout() {
-        try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApplication.class.getResource("/client/views/RootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	 * Initializes the root layout.
+	 */
+	private void initRootLayout() {
+		rootLayout = load("/client/views/RootLayout.fxml");
+	}
 
-    /**
-     * Shows the backupper overview inside the root layout.
-     */
-    public void showOverview() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApplication.class.getResource("/client/views/BackupperOverview.fxml"));
-            AnchorPane backupperOverview = (AnchorPane) loader.load();
-            rootLayout.setCenter(backupperOverview);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	private <T> T load(String fxmlResource) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(MainApplication.class.getResource(fxmlResource));
+		try {
+			try {
+				return loader.load();
+			} catch (IllegalStateException e) {
+				if (e.getMessage().contains("Location is not set")) {
+					throw new IOException("Not the location but the resource probably could not be found", e);
+				}
+				throw e;
+			}
+		} catch (IOException e) {
+			String fullFxmlResourcePath = MainApplication.class.getResource("/").getPath().replaceFirst("/$", "") + fxmlResource;
+			throw new RuntimeException(fullFxmlResourcePath + " nicht gefunden", e);
+		}
+	}
 
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
+	/**
+	 * Shows the backupper overview inside the root layout.
+	 */
+	private void showOverview() {
+		AnchorPane backupperOverview = load("/client/views/BackupperOverview.fxml");
+		rootLayout.setCenter(backupperOverview);
+	}
 
 	public static void main(String[] args) {
 		launch(args);
