@@ -24,6 +24,7 @@ public abstract class AbstractFXTest extends ApplicationTest {
 			new AbstractMap.SimpleEntry<>("testfx.robot", "glass"),
 			new AbstractMap.SimpleEntry<>("testfx.headless", "true"),
 			new AbstractMap.SimpleEntry<>("prism.order", "sw"),
+			new AbstractMap.SimpleEntry<>("prism.verbose", "true"),
 			new AbstractMap.SimpleEntry<>("prism.text", "t2k"),
 			new AbstractMap.SimpleEntry<>("java.awt.headless", "true"))
 			.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
