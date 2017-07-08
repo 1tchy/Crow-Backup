@@ -23,9 +23,7 @@ public abstract class AbstractFXTest extends ApplicationTest {
 	private static final Map<String, String> HEADLESS_PROPERTIES = Collections.unmodifiableMap(Stream.of(
 			new AbstractMap.SimpleEntry<>("testfx.robot", "glass"),
 			new AbstractMap.SimpleEntry<>("testfx.headless", "true"),
-			new AbstractMap.SimpleEntry<>("prism.order", "sw"),
-			new AbstractMap.SimpleEntry<>("glass.platform", "Monocle"),
-			new AbstractMap.SimpleEntry<>("monocle.platform", "Headless"),
+			new AbstractMap.SimpleEntry<>("prism.order", "es2"),
 			new AbstractMap.SimpleEntry<>("prism.verbose", "true"),
 			new AbstractMap.SimpleEntry<>("prism.text", "t2k"),
 			new AbstractMap.SimpleEntry<>("java.awt.headless", "true"))
