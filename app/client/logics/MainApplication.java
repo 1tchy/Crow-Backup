@@ -17,7 +17,7 @@ public class MainApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Backupper");
+		this.primaryStage.setTitle("Crow Backup");
 
 		initRootLayout();
 
@@ -58,11 +58,11 @@ public class MainApplication extends Application {
 	}
 
 	/**
-	 * Shows the backupper overview inside the root layout.
+	 * Shows the Crow Backup overview inside the root layout.
 	 */
 	private void showOverview() {
-		AnchorPane backupperOverview = load("/client/views/BackupperOverview.fxml");
-		rootLayout.setCenter(backupperOverview);
+		AnchorPane mainOverview = load("/client/views/MainOverview.fxml");
+		rootLayout.setCenter(mainOverview);
 	}
 
 	public static void main(String[] args) {

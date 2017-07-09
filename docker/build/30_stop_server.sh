@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-docker kill backupper_build_server
+docker kill crow_backup_build_server
 
-docker stop backupper_build_postgres_db
+docker stop crow_backup_build_postgres_db

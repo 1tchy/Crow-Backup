@@ -13,7 +13,7 @@
    <children>
       <AnchorPane id="header" fx:id="anchorPane_Toolbar" prefHeight="200.0" prefWidth="200.0" stylesheets="@stylesheets/HeaderStyle.css" AnchorPane.bottomAnchor="265.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label id="logo-text" fx:id="label_Logo" layoutX="14.0" layoutY="14.0" stylesheets="@stylesheets/HeaderStyle.css" text="Backupper" />
+            <Label id="logo-text" fx:id="label_Logo" layoutX="14.0" layoutY="14.0" stylesheets="@stylesheets/HeaderStyle.css" text="Crow Backup" />
             <Button fx:id="button_Help" layoutX="544.0" layoutY="4.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="55.0" stylesheets="@stylesheets/ButtonStyles.css" textAlignment="CENTER" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="542.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="4.0">
                <graphic>
                   <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">

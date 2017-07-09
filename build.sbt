@@ -1,4 +1,4 @@
-name := "backupper"
+name := "Crow Backup"
 
 version := "1.0-SNAPSHOT"
 

@@ -1,5 +1,5 @@
-Backupper
-=========
+Crow Backup
+===========
 
 arc42, das Template zur Dokumentation von Software- und
 Systemarchitekturen.
@@ -14,13 +14,13 @@ Hruschka & Dr. Gernot Starke.
 
 Einführung und Ziele
 ====================
-Backupper ist eine Software, mit welcher Endanwender auf eine einfache Weise **Backups** auf den Computer von **Freunden** erstellen können.
+Crow Backup ist eine Software, mit welcher Endanwender auf eine einfache Weise **Backups** auf den Computer von **Freunden** erstellen können.
 
 Aufgabenstellung
 ----------------
-Backupper archiviert einen oder mehrere Ordner von einem Computer zu jenem eines Freundes über das Internet.
+Crow Backup archiviert einen oder mehrere Ordner von einem Computer zu jenem eines Freundes über das Internet.
 In einer ersten Version werden folgende Features unterstützt:
-1. TODO [Task #16](https://github.com/1tchy/bakupper/issues/16) ( Define features for first, simple version)
+1. TODO [Task #16](https://github.com/1tchy/Crow-Backup/issues/16) ( Define features for first, simple version)
 
 Qualitätsziele
 --------------
@@ -47,7 +47,7 @@ Stakeholder
 
 Randbedingungen
 ===============
-Backupper soll:
+Crow Backup soll:
 - einfach Bedienbar sein
 - auf Windows und Mac laufen
 

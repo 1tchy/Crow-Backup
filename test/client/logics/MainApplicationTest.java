@@ -18,7 +18,7 @@ public class MainApplicationTest extends AbstractFXTest {
 		WaitForAsyncUtils.waitForFxEvents();
 		//Act
 		//Assert
-		verifyThat(window.getTitle(), equalTo("Backupper"));
+		verifyThat(window.getTitle(), equalTo("Crow Backup"));
 		verifyThat("#button_Login", hasText("Anmelden"));
 		verifyThat("#button_Settings", hasText("Einstellungen"));
 	}
