@@ -20,7 +20,29 @@ Aufgabenstellung
 ----------------
 Crow Backup archiviert einen oder mehrere Ordner von einem Computer zu jenem eines Freundes über das Internet.
 In einer ersten Version werden folgende Features unterstützt:
-1. TODO [Task #16](https://github.com/1tchy/Crow-Backup/issues/16) ( Define features for first, simple version)
+1. Benutzer können Freunden Speicherplatz freigeben
+   1. Benutzer können sich registrieren
+   1. Benutzer können sich anmelden
+   1. Benutzer können Freunde mittels Mailadresse finden
+   1. Benutzer können Freunde hinzufügen
+   1. Benutzer können Freunde entfernen
+   1. Freunde können beim Benutzer Daten speichern
+   1. Freunde können beim Benutzer ihre Daten lesen
+   1. Freunde können beim Benutzer ihre Daten löschen
+   1. Benutzer können den maximalen Speicherplatz der Freunde (noch) nicht limitieren
+1. Benutzer können Ordner verschlüsselt zu Freunden backuppen
+   1. Benutzer können mehrere Backupkonfigurationen haben
+   1. Jede Backupkonfiguration hat 1 (lokalen) Ordner als Quelle
+   1. Jede Backupkonfiguration hat 1 Freund als Ziel
+   1. Jede Backupkonfiguration kann manuell gestartet werden
+   1. Backupdaten werden vor der Übertragung lokal verschlüsselt
+   1. Backups haben (noch) keine Historie
+   1. Benutzer können den Fortschritt eines Backups erkennen
+   1. Falls der Benutzer und der Freund hinter einer Firewall sind wird ihre Kommunikation über den Server geroutet
+1. Benutzer können gebackupte Daten wiederherstellen
+   1. Benutzer können die gepackupten Dateihierarchie pro Backupkonfiguration anschauen
+   1. Benutzer können eine gebackupte Datei oder Ordnerhierarchie in einen frei definierbaren (lokalen) Ordner wiederherstellen
+   1. Benutzer können den Fortschritt einer Wiederherstellung erkennen
 
 Qualitätsziele
 --------------
