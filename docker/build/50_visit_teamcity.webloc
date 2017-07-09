@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>URL</key>
-	<string>http://ec2-34-205-189-133.compute-1.amazonaws.com:8111/</string>
+	<string>http://build.crowbackup.ch:8111/</string>
 </dict>
 </plist>

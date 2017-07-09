@@ -12,7 +12,7 @@ Den Server lassen wir auf einer Amazon EC2 t2.micro Instanz laufen, welche wir 1
 
 Für die Installation, die Konfiguration sowie den Betrieb des Servers gibt es die folgenden Skripts: `10_create_empty_server_database.sh`, `20_run_server.sh`, `30_stop_server.sh`
 
-Auf den Server zugegriffen werden kann mit [`50_visit_teamcity.webloc`](http://ec2-34-205-189-133.compute-1.amazonaws.com:8111/).
+Auf den Server zugegriffen werden kann mit [`50_visit_teamcity.webloc`](http://build.crowbackup.ch:8111/).
 
 Agent
 -----
