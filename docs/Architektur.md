@@ -46,7 +46,7 @@ In einer ersten Version werden folgende Features unterstützt:
 
 Qualitätsziele
 --------------
-Nach [ISO/IEC 9126](https://de.wikipedia.org/wiki/ISO/IEC_9126):
+Nach [ISO/IEC 2500](https://de.wikipedia.org/wiki/ISO/IEC_25000):
 
 | Priorität | Qualitäts-Ziel | Szenario |
 |----------:|----------------|----------|
@@ -174,7 +174,9 @@ Entwurfsentscheidungen
 
 | Nummer | Entscheid | evaluierte Alternativen | Begründung | Datum | Entscheid durch |
 |-------:|-----------|-------------------------|------------|:-----:|-----------------|
-| 1 |
+| 1 | Play Framework|
+| 2 | JavaFX |
+| 3 | REST |
 
 Qualitätsanforderungen
 ======================
