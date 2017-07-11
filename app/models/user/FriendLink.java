@@ -15,7 +15,7 @@ public class FriendLink extends BaseEntity {
 
     @SuppressWarnings("unused") //wird für Json-Deserialisierung verwendet
     @Deprecated
-    private FriendLink() {
+    public FriendLink() {
     }
 
     public FriendLink(User from, User to) {
