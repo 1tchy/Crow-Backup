@@ -1,19 +1,16 @@
 package client.viewmodels;
 
-import javafx.application.Platform;
+import client.logics.connectors.server.implementations.UserServerConnector;
+import client.views.LoginDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import models.backup.Backup;
 import models.user.User;
-import sun.rmi.runtime.Log;
 
 import java.util.Optional;
 import java.util.logging.Level;
@@ -78,44 +75,13 @@ public class EventHandlingController {
 		});
 		
 		button_Login.setOnAction((event) -> {
-            Dialog<Pair<String,String>> loginDialog = new Dialog<>();
-            loginDialog.setTitle("Login");
-            loginDialog.setHeaderText("Look, you can login!");
+            LoginDialog loginDialog = new LoginDialog();
 
-            ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
-            loginDialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+            Optional<User> result = loginDialog.showAndWait();
 
-            GridPane grid = new GridPane();
-
-            TextField username = new TextField("Username");
-            username.setPromptText("Username");
-            PasswordField password = new PasswordField();
-            password.setPromptText("Password");
-            grid.add(new Label("Username:"),0,0);
-            grid.add(username,1,0);
-            grid.add(new Label("Password:"), 0,1);
-            grid.add(password,1,1);
-            Node loginButton = loginDialog.getDialogPane().lookupButton(loginButtonType);
-            loginButton.setDisable(true);
-
-            username.textProperty().addListener((observable, oldValue, newValue) -> {
-                loginButton.setDisable(newValue.trim().isEmpty());
+            result.ifPresent(login -> {logger.log(Level.WARNING, "do login with " + login.getMail() + "/" + login.getPasswordHash());
+                // @todo: laurin how to?
             });
-
-            loginDialog.getDialogPane().setContent(grid);
-
-            Platform.runLater(username::requestFocus);
-
-            loginDialog.setResultConverter(dialogButton -> {
-                if (dialogButton == loginButtonType) {
-                    return new Pair<>(username.getText(), password.getText());
-                }
-                return null;
-            });
-
-            Optional<Pair<String, String>> result = loginDialog.showAndWait();
-
-            result.ifPresent(login -> logger.log(Level.WARNING, "do login with " + login.getKey() + "/" + login.getValue()));
 		});
 			
 		button_Settings.setOnAction((event) -> { 

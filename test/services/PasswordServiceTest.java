@@ -58,8 +58,8 @@ public class PasswordServiceTest {
     @Test
     public void test_that_hashVerificationIsSlow() {
         //Arrange
-        String hash = cut.createHash("1234".toCharArray());
-        char[] password = "1234".toCharArray();
+        String hash = cut.createHash("1234321".toCharArray());
+        char[] password = "1234321".toCharArray();
         //Act
         long start = System.currentTimeMillis();
         cut.isPasswordCorrect(hash, password);
