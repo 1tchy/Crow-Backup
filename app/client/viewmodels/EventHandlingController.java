@@ -1,5 +1,6 @@
 package client.viewmodels;
 
+import client.logics.MainApplication;
 import client.logics.connectors.server.implementations.UserServerConnector;
 import client.views.LoginDialog;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import models.backup.Backup;
 import models.user.User;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,19 +41,19 @@ public class EventHandlingController {
 	private Button button_Settings;
 	@FXML
 	private Button button_Login;
-	
+
 	@FXML
 	private TitledPane titledPane_MyBackups;
 	@FXML
 	private TitledPane titledPane_MyFriends;
-	
+
 	@FXML
 	private ListView<Backup> listView_MyBackups;
 	private ObservableList<Backup> listView_MyBackups_Data = FXCollections.observableArrayList();
 	@FXML
 	private ListView<User> listView_MyFriends;
 	private ObservableList<User> listView_MyFriends_Data = FXCollections.observableArrayList();
-	
+
 	private static Logger logger = Logger.getLogger(EventHandlingController.class.getName());
 
 	public EventHandlingController(){
@@ -63,7 +65,7 @@ public class EventHandlingController {
 	 */
 	@FXML
 	private void initialize(){
-		button_Help.setOnAction((event) -> { 
+		button_Help.setOnAction((event) -> {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Message Here...");
 			alert.setHeaderText("Look, an Information Dialog");
@@ -73,18 +75,24 @@ public class EventHandlingController {
 		        System.out.println("Pressed OK.");
 		    }});
 		});
-		
+
 		button_Login.setOnAction((event) -> {
             LoginDialog loginDialog = new LoginDialog();
 
             Optional<User> result = loginDialog.showAndWait();
 
             result.ifPresent(login -> {logger.log(Level.WARNING, "do login with " + login.getMail() + "/" + login.getPasswordHash());
-                // @todo: laurin how to?
+                //Quick hack to continue development (please feel free to clean up ;-)) //TODO!
+                try {
+                    logger.info("Login success: " + MainApplication.instanciate(UserServerConnector.class).loginAndRemember(login.getMail(), login.getPasswordHash().toCharArray()).toCompletableFuture().get());
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                // @todo roman: do not store password as string but only as char-array due to security reasons (it would stay in the string pool for quite some time)
             });
 		});
-			
-		button_Settings.setOnAction((event) -> { 
+
+		button_Settings.setOnAction((event) -> {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Message Here...");
 			alert.setHeaderText("Look, an Information Dialog");
@@ -94,7 +102,7 @@ public class EventHandlingController {
 		        System.out.println("Pressed OK.");
 		    }});
 		});
-		
+
 		listView_MyBackups.setItems(listView_MyBackups_Data);
 		listView_MyBackups.setCellFactory((list) -> {
 		    return new ListCell<Backup>() {
@@ -110,7 +118,7 @@ public class EventHandlingController {
 		        }
 		    };
 		});
-		
+
 		listView_MyBackups.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 		    System.out.println("ListView Selection Changed (selected: " + newValue.toString() + ")");
 		});

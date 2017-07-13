@@ -1,13 +1,7 @@
 package client.logics.connectors.server;
 
-import client.logics.connectors.server.implementations.TestServerConnector;
 import controllers.routes;
-import play.Application;
-import play.ApplicationLoader;
-import play.Environment;
 import play.api.mvc.Call;
-import play.inject.Injector;
-import play.inject.guice.GuiceApplicationLoader;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -15,7 +9,6 @@ import play.mvc.Http;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 
 public class AbstractServerConnector {
 
@@ -25,16 +18,6 @@ public class AbstractServerConnector {
     public AbstractServerConnector(WSClient ws, ServerAuthentication serverAuthentication) {
         this.ws = ws;
         this.serverAuthentication = serverAuthentication;
-    }
-
-    /**
-     * TODO: nur als Beispiel, später wieder entfernen
-     */
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final Application app = new GuiceApplicationLoader().builder(ApplicationLoader.Context.create(Environment.simple())).build();
-        Injector injector = app.injector();
-        System.out.println(injector.instanceOf(TestServerConnector.class).helloWorld("Erde").toCompletableFuture().get());
-        app.getWrappedApplication().stop();
     }
 
     protected <R> CompletionStage<R> apiCall(Class<R> returnType, Object... param) {
@@ -47,9 +30,9 @@ public class AbstractServerConnector {
         request.setBody(Json.toJson(param));
         request.setMethod(call.method());
         return request.execute().thenApply(
-                wsResponse -> wsResponse.getStatus() == Http.Status.NO_CONTENT ? null : wsResponse.asJson()
+            wsResponse -> wsResponse.getStatus() == Http.Status.NO_CONTENT ? null : wsResponse.asJson()
         ).thenApply(
-                returnJson -> returnJson == null ? null : Json.fromJson(returnJson, returnType)
+            returnJson -> returnJson == null ? null : Json.fromJson(returnJson, returnType)
         );
     }
 

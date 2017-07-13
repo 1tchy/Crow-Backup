@@ -46,7 +46,7 @@ In einer ersten Version werden folgende Features unterstützt:
 
 Qualitätsziele
 --------------
-Nach [ISO/IEC 2500](https://de.wikipedia.org/wiki/ISO/IEC_25000):
+Nach [ISO/IEC 25000](https://de.wikipedia.org/wiki/ISO/IEC_25000):
 
 | Priorität | Qualitäts-Ziel | Szenario |
 |----------:|----------------|----------|

@@ -6,6 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import play.ApplicationLoader;
+import play.Environment;
+import play.inject.guice.GuiceApplicationLoader;
 
 import java.io.IOException;
 
@@ -13,9 +16,11 @@ public class MainApplication extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private static /* @todo roman: remove static (how to access this MainApplication without static access from LoginDialog?) */ play.Application app;
 
     @Override
     public void start(Stage primaryStage) {
+        this.app = new GuiceApplicationLoader().builder(ApplicationLoader.Context.create(Environment.simple())).build(); //TODO: choose different ApplicationLoader that does not also loads the Play Framework (including its database) in the client
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Crow Backup");
 
@@ -24,6 +29,15 @@ public class MainApplication extends Application {
         showOverview();
 
         showScene();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        app.getWrappedApplication().stop();
+    }
+
+    public static <O> O instanciate(Class<O> objectOfType) {
+        return app.injector().instanceOf(objectOfType);
     }
 
     private void showScene() {
