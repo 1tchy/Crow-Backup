@@ -174,9 +174,9 @@ Entwurfsentscheidungen
 
 | Nummer | Entscheid | evaluierte Alternativen | Begründung | Datum | Entscheid durch |
 |-------:|-----------|-------------------------|------------|:-----:|-----------------|
-| 1 | Play Framework|
-| 2 | JavaFX |
-| 3 | REST |
+| 1 | Play Framework| keine | Es ist ein auf Java (=kennen wir) basiertes Server-Framework, in welchem Laurin bereits Erfahrung hat. | Juni 2017 | Daniela, Laurin
+| 2 | JavaFX | Swing, Webapplikation wie Angular | Wir werden bestimmt eine Client-Anwendung brauchen (es kann nicht alles nur im Browser oder auf dem Server passieren). Diese möchten wir in Java (=kennen wir und funktioniert auf vielen Betriebssystemen) entwickeln - jedoch nicht mit einem alten Framework (Swing). | Juni 2017 | Daniela, Laurin
+| 3 | REST | keine | kein aktiver Entscheid | Juni 2017
 
 Qualitätsanforderungen
 ======================
