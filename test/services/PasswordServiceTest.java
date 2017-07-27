@@ -44,7 +44,7 @@ public class PasswordServiceTest {
 
     @Test
     public void test_that_hashIsSalted() {
-        //Arrange
+        //Arrangge
         //Act
         String hash1 = cut.createHash("1234".toCharArray());
         String hash2 = cut.createHash("1234".toCharArray());
@@ -65,7 +65,7 @@ public class PasswordServiceTest {
         cut.isPasswordCorrect(hash, password);
         long duration = System.currentTimeMillis() - start;
         //Assert
-        assertThat(duration, greaterThan(50L));
+        assertThat(duration, greaterThan(40L));
         assertThat(duration, lessThan(1000L));
     }
 }

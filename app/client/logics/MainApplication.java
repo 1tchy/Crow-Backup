@@ -1,14 +1,13 @@
 package client.logics;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import play.ApplicationLoader;
-import play.Environment;
-import play.inject.guice.GuiceApplicationLoader;
 
 import java.io.IOException;
 
@@ -16,11 +15,12 @@ public class MainApplication extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    private static /* @todo roman: remove static (how to access this MainApplication without static access from LoginDialog?) */ play.Application app;
+    private Injector injector;
 
     @Override
     public void start(Stage primaryStage) {
-        this.app = new GuiceApplicationLoader().builder(ApplicationLoader.Context.create(Environment.simple())).build(); //TODO: choose different ApplicationLoader that does not also loads the Play Framework (including its database) in the client
+        injector = Guice.createInjector(new ClientModule());
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Crow Backup");
 
@@ -31,14 +31,6 @@ public class MainApplication extends Application {
         showScene();
     }
 
-    @Override
-    public void stop() throws Exception {
-        app.getWrappedApplication().stop();
-    }
-
-    public static <O> O instanciate(Class<O> objectOfType) {
-        return app.injector().instanceOf(objectOfType);
-    }
 
     private void showScene() {
         Scene scene = new Scene(rootLayout);
@@ -55,6 +47,7 @@ public class MainApplication extends Application {
 
     private <T> T load(String fxmlResource) {
         FXMLLoader loader = new FXMLLoader();
+        loader.setControllerFactory(instantiatedClass -> injector.getInstance(instantiatedClass));
         loader.setLocation(MainApplication.class.getResource(fxmlResource));
         try {
             try {

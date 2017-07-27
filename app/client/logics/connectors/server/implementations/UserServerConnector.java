@@ -2,6 +2,7 @@ package client.logics.connectors.server.implementations;
 
 import client.logics.connectors.server.AbstractServerConnector;
 import client.logics.connectors.server.ServerAuthentication;
+import com.google.inject.Singleton;
 import interfaces.UserServerInterface;
 import models.user.User;
 import play.libs.ws.WSClient;
@@ -11,6 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
 
+@Singleton
 public class UserServerConnector extends AbstractServerConnector implements UserServerInterface {
 
     @Inject
