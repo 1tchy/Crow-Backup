@@ -1,0 +1,31 @@
+
+.label {
+    -fx-font-size: 18pt;
+}
+
+.text, .text-field {
+    -fx-font-size: 14pt;
+}
+
+
+.button {
+    -fx-background-color: #090a0c,
+    linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+    linear-gradient(#20262b, #191d22),
+    radial-gradient(center 50% 20%, radius 100%, rgba(114, 131, 148, 0.9), rgba(255, 255, 255, 0));
+    -fx-background-radius: 5pt, 4pt, 3pt, 5pt;
+    -fx-background-insets: 0, 1pt, 2pt, 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-font-family: "Arial";
+    -fx-font-size: 12pt;
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-padding: 10pt 20pt 10pt 20pt;
+    -fx-max-height: 40pt;
+    -fx-min-height: 40pt;
+    -fx-pref-height: 40pt;
+}
+
+.button .text {
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.9), 1, 0.0, 0, 1);
+}
+

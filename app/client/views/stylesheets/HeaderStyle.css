@@ -6,4 +6,5 @@
 	-fx-font-family: "Arial";
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-font-size: 14pt;
+    -fx-padding: 10pt;
 }

@@ -19,7 +19,7 @@ public class ClientModule extends AbstractModule {
     }
 
     @Provides
-    WSClient provicesWSClient() {
+    WSClient providesWSClient() {
         String name = "wsclient";
         ActorSystem system = ActorSystem.create(name);
         ActorMaterializerSettings settings = ActorMaterializerSettings.create(system);

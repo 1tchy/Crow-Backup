@@ -1,0 +1,17 @@
+.header {
+    -fx-font-size: 18pt;
+    -fx-padding: 2pt;
+    -fx-background-color: #6E7982;
+    -fx-fill: white;
+}
+.header .text {
+    -fx-fill: white;
+}
+
+GridPane > * {
+    -fx-min-height: 40pt;
+}
+
+.text-field {
+    -fx-min-height: 25pt;
+}
