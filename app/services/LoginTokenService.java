@@ -1,7 +1,8 @@
 package services;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 import models.user.User;
-import play.Configuration;
 import play.Environment;
 
 import javax.crypto.Mac;
@@ -16,7 +17,7 @@ import java.util.concurrent.CompletionStage;
 
 public class LoginTokenService {
 
-    protected static final String CRYPTO_SECRET = "play.crypto.secret";
+    protected static final String CRYPTO_SECRET = "play.http.secret.key";
     public static final String AUTHENTICATION_TYPE = "Token";
     private static final String TOKEN_SEPARATOR = "-";
     private static final String MAC_ALGORITHM = "HmacSHA1";
@@ -24,13 +25,13 @@ public class LoginTokenService {
     private final PersistenceService persistenceService;
 
     @Inject
-    public LoginTokenService(PersistenceService persistenceService, Configuration configuration, Environment environment) {
+    public LoginTokenService(PersistenceService persistenceService, Config configuration, Environment environment) {
         this.persistenceService = persistenceService;
         String secret = configuration.getString(LoginTokenService.CRYPTO_SECRET);
         if (secret == null) {
-            throw configuration.reportError("play.crypto.secret", "ist nicht gesetzt", null);
+            throw new ConfigException.Missing(CRYPTO_SECRET);
         } else if (environment.isProd() && secret.equals("changeme")) {
-            throw configuration.reportError("play.crypto.secret", "ist noch immer 'changeme'", null);
+            throw new ConfigException.BadValue(CRYPTO_SECRET, "ist noch immer 'changeme'");
         }
         try {
             mac = Mac.getInstance(MAC_ALGORITHM);

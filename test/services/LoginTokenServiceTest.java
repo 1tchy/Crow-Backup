@@ -1,11 +1,11 @@
 package services;
 
+import com.typesafe.config.ConfigFactory;
 import helpers.GeneralHelpers;
 import helpers.WithTransaction;
 import models.user.User;
 import org.junit.Before;
 import org.junit.Test;
-import play.Configuration;
 import play.Environment;
 import play.Mode;
 
@@ -20,7 +20,7 @@ public class LoginTokenServiceTest extends WithTransaction {
 
     @Before
     public void setup() {
-        cut = new LoginTokenService(persistenceService, new Configuration(Collections.singletonMap(LoginTokenService.CRYPTO_SECRET, "dEMr6BEqeDKdG2n")), new Environment(Mode.TEST));
+        cut = new LoginTokenService(persistenceService, ConfigFactory.parseMap(Collections.singletonMap(LoginTokenService.CRYPTO_SECRET, "dEMr6BEqeDKdG2n")), new Environment(Mode.TEST));
     }
 
     @Test

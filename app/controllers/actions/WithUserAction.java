@@ -6,6 +6,7 @@ import play.mvc.Result;
 import services.LoginTokenService;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
@@ -36,14 +37,14 @@ public class WithUserAction extends Action.Simple implements ExplicitAction {
      */
     @Override
     public CompletionStage<Result> call(Http.Context ctx, Function<Http.Context, CompletionStage<Result>> callable) {
-        String authentication = ctx.request().getHeader("Authentication");
-        if (authentication == null) {
+        Optional<String> authentication = ctx.request().header("Authentication");
+        if (!authentication.isPresent()) {
             return forbiddenPromise("Authentication-Header fehlt");
         }
-        if (!authentication.startsWith(LoginTokenService.AUTHENTICATION_TYPE)) {
+        if (!authentication.get().startsWith(LoginTokenService.AUTHENTICATION_TYPE)) {
             return forbiddenPromise("Authentication-Type unbekannt: " + authentication);
         }
-        return loginTokenService.unpack(authentication.replaceFirst(LoginTokenService.AUTHENTICATION_TYPE + "\\s+", "")).thenCompose(user -> {
+        return loginTokenService.unpack(authentication.get().replaceFirst(LoginTokenService.AUTHENTICATION_TYPE + "\\s+", "")).thenCompose(user -> {
             if (!user.isPresent()) {
                 return forbiddenPromise("Authentication-User unbekannt");
             }

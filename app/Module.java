@@ -18,10 +18,14 @@ public class Module extends AbstractModule {
     public void configure() {
         //Alle Interfaces von den Implementationen in controllers.implementations durch diese injecten lassen
         for (Class<?> aClass : new Reflections("controllers.implementations", new SubTypesScanner(false)).getSubTypesOf(Object.class)) {
-            for (Class<?> interfaces : aClass.getInterfaces()) {
-                //noinspection unchecked
-                bind((Class<? super Object>) interfaces).to(aClass);
-            }
+            bindImplementedInterfaces(aClass);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void bindImplementedInterfaces(Class<?> aClass) {
+        for (Class<?> interfaces : aClass.getInterfaces()) {
+            bind((Class<? super Object>) interfaces).to(aClass);
         }
     }
 
