@@ -49,10 +49,10 @@ public class LoginDialog extends DialogBase<User> {
         grid.add(username, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
         grid.add(password, 1, 1);
-        grid.add(new Pane(),0,2);
+        grid.add(new Pane(), 0, 2);
         Button createUserButton = new Button("Create User");
         createUserButton.setOnAction(e -> new CreateUserDialog().show());
-        grid.add(createUserButton,0,3);
+        grid.add(createUserButton, 0, 3);
         Node loginNode = super.getDialogPane().lookupButton(loginButton);
         loginNode.setDisable(true);
 

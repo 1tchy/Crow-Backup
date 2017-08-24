@@ -11,22 +11,22 @@ import static org.testfx.matcher.base.NodeMatchers.hasText;
 
 public class MainApplicationTest extends AbstractFXTest {
 
-	@Test
-	public void test_hauptseite_when_appGestartet() {
-		// Arrange
-		Stage window = (Stage) window(0);
-		WaitForAsyncUtils.waitForFxEvents();
-		//Act
-		//Assert
-		verifyThat(window.getTitle(), equalTo("Crow Backup"));
-		verifyThat("#button_Login", hasText("Anmelden"));
-		verifyThat("#button_Settings", hasText("Einstellungen"));
-	}
+    @Test
+    public void test_hauptseite_when_appGestartet() {
+        // Arrange
+        Stage window = (Stage) window(0);
+        WaitForAsyncUtils.waitForFxEvents();
+        //Act
+        //Assert
+        verifyThat(window.getTitle(), equalTo("Crow Backup"));
+        verifyThat("#button_Login", hasText("Anmelden"));
+        verifyThat("#button_Settings", hasText("Einstellungen"));
+    }
 
-	@Override
-	@NotNull
-	protected Class<MainApplication> getAppClass() {
-		return MainApplication.class;
-	}
+    @Override
+    @NotNull
+    protected Class<MainApplication> getAppClass() {
+        return MainApplication.class;
+    }
 
 }

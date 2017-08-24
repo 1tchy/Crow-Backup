@@ -19,50 +19,50 @@ import java.util.stream.Stream;
 
 public abstract class AbstractFXTest extends ApplicationTest {
 
-	private static final boolean HEADLESS = true;
-	private static final Map<String, String> HEADLESS_PROPERTIES = Collections.unmodifiableMap(Stream.of(
-			new AbstractMap.SimpleEntry<>("testfx.robot", "glass"),
-			new AbstractMap.SimpleEntry<>("testfx.headless", "true"),
-			new AbstractMap.SimpleEntry<>("prism.order", "sw"),
-			new AbstractMap.SimpleEntry<>("prism.verbose", "true"),
-			new AbstractMap.SimpleEntry<>("prism.text", "t2k"),
-			new AbstractMap.SimpleEntry<>("java.awt.headless", "true"))
-			.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
+    private static final boolean HEADLESS = true;
+    private static final Map<String, String> HEADLESS_PROPERTIES = Collections.unmodifiableMap(Stream.of(
+        new AbstractMap.SimpleEntry<>("testfx.robot", "glass"),
+        new AbstractMap.SimpleEntry<>("testfx.headless", "true"),
+        new AbstractMap.SimpleEntry<>("prism.order", "sw"),
+        new AbstractMap.SimpleEntry<>("prism.verbose", "true"),
+        new AbstractMap.SimpleEntry<>("prism.text", "t2k"),
+        new AbstractMap.SimpleEntry<>("java.awt.headless", "true"))
+        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
-	@BeforeClass
-	public static void initHeadlessMode() {
-		setHeadlessMode(HEADLESS);
-	}
+    @BeforeClass
+    public static void initHeadlessMode() {
+        setHeadlessMode(HEADLESS);
+    }
 
-	@SuppressWarnings("WeakerAccess") //for easier switch during development protected
-	protected static void setHeadlessMode(boolean activate) {
-		for (Map.Entry<String, String> property : HEADLESS_PROPERTIES.entrySet()) {
-			if (activate) {
-				System.setProperty(property.getKey(), property.getValue());
-			} else {
-				System.clearProperty(property.getKey());
-			}
-		}
-	}
+    @SuppressWarnings("WeakerAccess") //for easier switch during development protected
+    protected static void setHeadlessMode(boolean activate) {
+        for (Map.Entry<String, String> property : HEADLESS_PROPERTIES.entrySet()) {
+            if (activate) {
+                System.setProperty(property.getKey(), property.getValue());
+            } else {
+                System.clearProperty(property.getKey());
+            }
+        }
+    }
 
-	@Before
-	public void setup() throws Exception {
-		launch(getAppClass());
-	}
+    @Before
+    public void setup() throws Exception {
+        launch(getAppClass());
+    }
 
-	@NotNull
-	protected abstract Class<MainApplication> getAppClass();
+    @NotNull
+    protected abstract Class<MainApplication> getAppClass();
 
-	@Override
-	public void start(Stage stage) {
-		stage.show();
-	}
+    @Override
+    public void start(Stage stage) {
+        stage.show();
+    }
 
-	@After
-	public void tearDown() throws TimeoutException {
-		FxToolkit.hideStage();
-		release(new KeyCode[]{});
-		release(new MouseButton[]{});
-	}
+    @After
+    public void tearDown() throws TimeoutException {
+        FxToolkit.hideStage();
+        release(new KeyCode[]{});
+        release(new MouseButton[]{});
+    }
 
 }

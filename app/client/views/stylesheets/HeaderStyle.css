@@ -1,9 +1,10 @@
 #header {
     -fx-background-color: #6E7982;
 }
+
 #logo-text {
-	-fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.9) , 1, 0.0 , 0 , 1 );
-	-fx-font-family: "Arial";
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.9), 1, 0.0, 0, 1);
+    -fx-font-family: "Arial";
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-font-size: 14pt;
     -fx-padding: 10pt;

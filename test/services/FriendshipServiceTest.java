@@ -70,8 +70,8 @@ public class FriendshipServiceTest extends WithTransaction {
         Friendship friendship = currentFriendships[0];
         assertTrue(friendship.isConfirmed());
         assertThat(friendship.getLinks(), containsInAnyOrder(Arrays.asList(
-                Matchers.<FriendLink>allOf(hasProperty("from", equalTo(userFrom)), hasProperty("to", equalTo(userTo))), //request
-                Matchers.<FriendLink>allOf(hasProperty("to", equalTo(userFrom)), hasProperty("from", equalTo(userTo))) //confirmation
+            Matchers.<FriendLink>allOf(hasProperty("from", equalTo(userFrom)), hasProperty("to", equalTo(userTo))), //request
+            Matchers.<FriendLink>allOf(hasProperty("to", equalTo(userFrom)), hasProperty("from", equalTo(userTo))) //confirmation
         )));
     }
 

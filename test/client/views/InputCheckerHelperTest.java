@@ -36,14 +36,14 @@ class InputCheckerHelperTest {
 
     @Test
     public void test_isSame_positive() throws Exception {
-        String[] input = {"abc","abc","abc","abc"};
+        String[] input = {"abc", "abc", "abc", "abc"};
         boolean isSame = InputCheckerHelper.isSame(input);
         assertTrue(isSame);
     }
 
     @Test
     public void test_isSame_negative() throws Exception {
-        String[] input = {"abc","","abc"};
+        String[] input = {"abc", "", "abc"};
         boolean isSame = InputCheckerHelper.isSame(input);
         assertTrue(isSame);
     }
