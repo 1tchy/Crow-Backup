@@ -65,7 +65,7 @@ public class PasswordServiceTest {
         cut.isPasswordCorrect(hash, password);
         long duration = System.currentTimeMillis() - start;
         //Assert
-        assertThat(duration, greaterThan(40L));
+        assertThat(duration, greaterThan(50L)); //if this fails, maybe we can increase the iterations in services.PasswordService.createHash()
         assertThat(duration, lessThan(1000L));
     }
 }

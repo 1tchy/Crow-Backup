@@ -1,49 +1,26 @@
-This is your new Play application
-=================================
+Crow Backup Readme
+==================
 
-This file will be packaged with your application when using `activator dist`.
+Crow Backup ist eine Software, mit welcher Endanwender auf eine einfache Weise **Backups** auf den Computer von **Freunden** erstellen können.
 
-There are several demonstration files available in this template.
+Abhängigkeiten
+--------------
 
-Controllers
-===========
+* Java 8 (JDK) installiert
+* [SBT](http://www.scala-sbt.org/download.html) installiert
 
-- HomeController.java:
+Starten des Servers zum Entwickeln
+----------------------------------
 
-  Shows how to handle simple HTTP requests.
+`sbt ~run -jvm-debug 5005`
 
-- AsyncController.java:
+* `~` &rarr; Server wird bei Quellcode-Änderungen automatisch neu gestartet
+* `-jvm-debug 5005` &rarr; ein Debug-Port wird geöffnet (anschliessend kann man mit der IDE ein Remote-Debugging starten)
 
-  Shows how to do asynchronous programming when handling a request.
+Starten der Tests
+-----------------
+`sbt clean test`
 
-- CountController.java:
-
-  Shows how to inject a component into a controller and use the component when
-  handling requests.
-
-Components
-==========
-
-- Module.java:
-
-  Shows how to use Guice to bind all the components needed by your application.
-
-- Counter.java:
-
-  An example of a component that contains state, in this case a simple counter.
-
-- ApplicationTimer.java:
-
-  An example of a component that starts when the application starts and stops
-  when the application stops.
-
-Filters
-=======
-
-- Filters.java:
-
-  Creates the list of HTTP filters used by your application.
-
-- ExampleFilter.java
-
-  A simple filter that adds a header to every response.
+Starten des Clients
+-------------------
+z.B. mit `sbt "run-main client.logics.MainApplication"`
