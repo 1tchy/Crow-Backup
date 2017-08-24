@@ -71,7 +71,7 @@ public class BaseApiControllerTest extends WithApplication {
         Call target = routes.BaseApiController.apiCall("TestServerInterface", "helloWorld");
         Http.RequestBuilder requestBuilder = new Http.RequestBuilder();
         //Act
-        Result actual = route(requestBuilder.method(target.method()).uri(target.url()));
+        Result actual = route(app, requestBuilder.method(target.method()).uri(target.url()));
         //Assert
         assertNotEquals(Http.Status.OK, actual.status());
     }

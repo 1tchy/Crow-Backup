@@ -4,18 +4,20 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq(
+  guice,
   javaJdbc,
   javaJpa,
   //see latest versions under: http://mvnrepository.com/artifact/org.hibernate/hibernate-core
   "org.hibernate"             %  "hibernate-core"          % "5.2.10.Final",
   //see latest versions under: http://mvnrepository.com/artifact/org.hibernate/hibernate-validator
-  "org.hibernate"             %  "hibernate-validator"     % "5.4.1.Final",
+  "org.hibernate"             %  "hibernate-validator"     % "6.0.2.Final",
+  //see latest versions under: http://mvnrepository.com/artifact/com.h2database/h2
+  "com.h2database"            % "h2"                       % "1.4.196",
   //see latest versions under: https://mvnrepository.com/artifact/dom4j/dom4j
   "dom4j"                     % "dom4j"                    % "1.6.1",
-  cache,
   javaWs,
   //see latest version under: https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/org/jetbrains/annotations/
   "org.jetbrains"             % "annotations"              % "7.0.2",
@@ -28,7 +30,7 @@ libraryDependencies ++= Seq(
   //see latest version under: https://mvnrepository.com/artifact/org.testfx/openjfx-monocle
   "org.testfx"                % "openjfx-monocle"          % "8u76-b04" % Test,
 //see latest version under: http://mvnrepository.com/artifact/org.mockito/mockito-core
-  "org.mockito"               % "mockito-core"             % "2.8.9" % Test,
+  "org.mockito"               % "mockito-core"             % "2.8.47" % Test,
   //see latest version under: http://mvnrepository.com/artifact/junit/junit
   "junit"                     % "junit"                    % "4.12" % Test,
   //see latest versions under: http://mvnrepository.com/artifact/org.hamcrest/java-hamcrest
@@ -77,4 +79,4 @@ Keys.fork in Test := false
 
 EclipseKeys.preTasks := Seq(compile in Compile)
 EclipseKeys.projectFlavor := EclipseProjectFlavor.Java           // Java project. Don't expect Scala IDE
-EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes 
+EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes

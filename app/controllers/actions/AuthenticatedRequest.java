@@ -5,6 +5,8 @@ import play.api.http.MediaRange;
 import play.api.mvc.Request;
 import play.api.mvc.RequestHeader;
 import play.i18n.Lang;
+import play.libs.typedmap.TypedKey;
+import play.libs.typedmap.TypedMap;
 import play.mvc.Http;
 
 import java.security.cert.X509Certificate;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("deprecation")
 public class AuthenticatedRequest implements Http.Request {
     private final Http.Request delegate;
     private final User authenticatedUser;
@@ -31,14 +34,23 @@ public class AuthenticatedRequest implements Http.Request {
     }
 
     @Override
-    public String username() {
-        return delegate.username();
+    public Http.Request withBody(Http.RequestBody body) {
+        return delegate.withBody(body);
     }
 
     @Override
-    @Deprecated
-    public void setUsername(String username) {
-        delegate.setUsername(username);
+    public Http.Request withAttrs(TypedMap newAttrs) {
+        return delegate.withAttrs(newAttrs);
+    }
+
+    @Override
+    public <A> Http.Request addAttr(TypedKey<A> key, A value) {
+        return delegate.addAttr(key, value);
+    }
+
+    @Override
+    public String username() {
+        return delegate.username();
     }
 
     @Override
@@ -49,6 +61,11 @@ public class AuthenticatedRequest implements Http.Request {
     @Override
     public Request<Http.RequestBody> _underlyingRequest() {
         return delegate._underlyingRequest();
+    }
+
+    @Override
+    public Request<Http.RequestBody> asScala() {
+        return delegate.asScala();
     }
 
     @Override
@@ -74,6 +91,11 @@ public class AuthenticatedRequest implements Http.Request {
     @Override
     public boolean secure() {
         return delegate.secure();
+    }
+
+    @Override
+    public TypedMap attrs() {
+        return delegate.attrs();
     }
 
     @Override
@@ -122,6 +144,11 @@ public class AuthenticatedRequest implements Http.Request {
     }
 
     @Override
+    public Http.Headers getHeaders() {
+        return delegate.getHeaders();
+    }
+
+    @Override
     public Map<String, String[]> headers() {
         return delegate.headers();
     }
@@ -134,6 +161,11 @@ public class AuthenticatedRequest implements Http.Request {
     @Override
     public boolean hasHeader(String headerName) {
         return delegate.hasHeader(headerName);
+    }
+
+    @Override
+    public boolean hasBody() {
+        return delegate.hasBody();
     }
 
     @Override
