@@ -44,7 +44,7 @@ public class PasswordServiceTest {
 
     @Test
     public void test_that_hashIsSalted() {
-        //Arrangge
+        //Arrange
         //Act
         String hash1 = cut.createHash("1234".toCharArray());
         String hash2 = cut.createHash("1234".toCharArray());
