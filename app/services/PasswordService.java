@@ -22,7 +22,7 @@ public class PasswordService {
 
     public String createHash(char[] password) {
         try {
-            return argon2.hash(2, 65536, Runtime.getRuntime().availableProcessors(), password);
+            return argon2.hash(4, 65536, Runtime.getRuntime().availableProcessors(), password);
         } finally {
             argon2.wipeArray(password); // Wipe confidential data
         }
