@@ -7,10 +7,12 @@ import client.logics.connectors.server.implementations.UserServerConnector;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import interfaces.UserServerInterface;
-import org.asynchttpclient.AsyncHttpClientConfig;
-import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import play.libs.ws.WSClient;
 import play.libs.ws.ahc.AhcWSClient;
+import play.shaded.ahc.org.asynchttpclient.AsyncHttpClient;
+import play.shaded.ahc.org.asynchttpclient.AsyncHttpClientConfig;
+import play.shaded.ahc.org.asynchttpclient.DefaultAsyncHttpClient;
+import play.shaded.ahc.org.asynchttpclient.DefaultAsyncHttpClientConfig;
 
 public class ClientModule extends AbstractModule {
     @Override
@@ -20,16 +22,21 @@ public class ClientModule extends AbstractModule {
 
     @Provides
     WSClient providesWSClient() {
+        //Source from https://www.playframework.com/documentation/2.6.x/JavaWS#Directly-creating-WSClient
+        // Set up Akka
         String name = "wsclient";
         ActorSystem system = ActorSystem.create(name);
         ActorMaterializerSettings settings = ActorMaterializerSettings.create(system);
         ActorMaterializer materializer = ActorMaterializer.create(settings, system, name);
 
+        // Set up AsyncHttpClient directly from config
         AsyncHttpClientConfig asyncHttpClientConfig = new DefaultAsyncHttpClientConfig.Builder()
             .setMaxRequestRetry(3)
             .setShutdownQuietPeriod(0)
             .setShutdownTimeout(180).build();
+        AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient(asyncHttpClientConfig);
 
-        return new AhcWSClient(asyncHttpClientConfig, materializer);
+        // Set up WSClient instance directly from asynchttpclient.
+        return new AhcWSClient(asyncHttpClient, materializer);
     }
 }
