@@ -22,7 +22,7 @@ public class AbstractServerConnector {
 
     protected <R> CompletionStage<R> apiCall(Class<R> returnType, Object... param) {
         Method method = getCallingMethod();
-        Call call = routes.BaseApiController.apiCall(method.getDeclaringClass().getSimpleName(), method.getName());
+        Call call = routes.BaseApiController.apiCall(method.getDeclaringClass().getInterfaces()[0].getSimpleName(), method.getName());
         String url = call.absoluteURL(false, "localhost:9000");
         WSRequest request = ws.url(url);
         request.setContentType("application/json");
@@ -30,7 +30,16 @@ public class AbstractServerConnector {
         request.setBody(Json.toJson(param));
         request.setMethod(call.method());
         return request.execute().thenApply(
-            wsResponse -> wsResponse.getStatus() == Http.Status.NO_CONTENT ? null : wsResponse.asJson()
+            wsResponse -> {
+                switch (wsResponse.getStatus()) {
+                    case Http.Status.NO_CONTENT:
+                        return null;
+                    case Http.Status.NOT_FOUND:
+                        throw new RuntimeException(method + " not found under " + url);
+                    default:
+                        return wsResponse.asJson();
+                }
+            }
         ).thenApply(
             returnJson -> returnJson == null ? null : Json.fromJson(returnJson, returnType)
         );
