@@ -24,6 +24,7 @@ public class SafePasswordField extends PasswordField {
 
         StringBuilder stringBuilder = (StringBuilder) field.get(content);
 
+        clear();
         result = new char[stringBuilder.length()];
         stringBuilder.getChars(0, stringBuilder.length(), result, 0);
 
