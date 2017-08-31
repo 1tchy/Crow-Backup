@@ -88,9 +88,7 @@ public class WithApplication {
      */
     protected static <T> void runThreeStepTestWithUser(Supplier<T> arrange, Function<T, Result> act, BiConsumer<T, Result> asserter) {
         runThreeStepTest(() -> {
-            User user = new User();
-            user.setMail("tets3@test.com");
-            user.setPasswordHash("#####");
+            User user = new User("test3@test.com", "####");
             jpaApi.em().persist(user);
             return new F.Tuple<>(user, arrange.get());
         }, tuple -> {
@@ -107,9 +105,7 @@ public class WithApplication {
     protected static <T> void requestWithUser(Function<User, T> arrange, Call target, Function<T, String> json, TriConsumer<User, T, Result> asserter) {
         runThreeStepTest(() -> {
             //Arrange
-            User user = new User();
-            user.setMail("tets3@test.com");
-            user.setPasswordHash("#####");
+            User user = new User("test3@test.com", "####");
             jpaApi.em().persist(user);
             return new F.Tuple<>(user, arrange.apply(user));
         }, tuple -> {

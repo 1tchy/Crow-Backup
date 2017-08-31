@@ -23,8 +23,8 @@ public class FriendshipServiceTest extends WithTransaction {
     @Before
     public void setup() {
         cut = new FriendshipService(persistenceService);
-        userFrom = new User();
-        userTo = new User();
+        userFrom = new User("from@test.com", null);
+        userTo = new User("to@test.com", null);
         persistenceService.persist(userFrom, userTo);
     }
 

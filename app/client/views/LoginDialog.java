@@ -8,22 +8,24 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import models.user.User;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 
 public class LoginDialog extends DialogBase<User> {
 
+    @Inject
+    private CreateUserDialog createUserDialog;
     private User user;
 
     private ButtonType loginButton;
 
     public LoginDialog() {
-        super();
-        super.setHeader("Look, you chan login!");
+        super("Look, you chan login!");
         super.setTitle("Login");
 
         setButtons();
         setInput();
-        user = new User();
+        user = new User(null, null);
 
         super.setResultConverter(dialogButton -> {
             if (dialogButton == loginButton) {
@@ -51,7 +53,7 @@ public class LoginDialog extends DialogBase<User> {
         grid.add(password, 1, 1);
         grid.add(new Pane(), 0, 2);
         Button createUserButton = new Button("Create User");
-        createUserButton.setOnAction(e -> new CreateUserDialog().show());
+        createUserButton.setOnAction(e -> createUserDialog.show());
         grid.add(createUserButton, 0, 3);
         Node loginNode = super.getDialogPane().lookupButton(loginButton);
         loginNode.setDisable(true);

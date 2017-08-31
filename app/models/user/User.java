@@ -12,6 +12,16 @@ public class User extends BaseEntity {
     @JsonIgnore
     private String passwordHash;
 
+    @SuppressWarnings("unused") //wird für Json-Deserialisierung verwendet
+    @Deprecated
+    public User() {
+    }
+
+    public User(String mail, String passwordHash) {
+        this.mail = mail;
+        this.passwordHash = passwordHash;
+    }
+
     public String getMail() {
         return mail;
     }
