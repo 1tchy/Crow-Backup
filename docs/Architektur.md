@@ -66,6 +66,7 @@ Stakeholder
 |--------------|---------|-------------------|
 | Laurin | | Software entwickeln, Software selber nutzen können, Spass bei der Entwicklung haben, evtl. Geld mit Software verdienen
 | Daniela | | TODO
+| Roman | | see laurin
 
 Randbedingungen
 ===============

@@ -83,18 +83,16 @@ public class EventHandlingController {
         });
 
         button_Login.setOnAction((event) -> {
-            Optional<User> result = loginDialog.showAndWait();
+            Optional<Login> result = loginDialog.showAndWait();
 
             result.ifPresent(login -> {
-                logger.log(Level.WARNING, "do login with " + login.getMail() + "/" + login.getPasswordHash());
+                logger.log(Level.WARNING, "do login with " + login.getUser());
                 //Quick hack to continue development (please feel free to clean up ;-)) //TODO!
                 try {
-                    logger.info("Login success: " + userServerConnector.loginAndRemember(login.getMail(), login.getPasswordHash().toCharArray()).toCompletableFuture().get());
+                    logger.info("Login success: " + userServerConnector.loginAndRemember(login.getUser(), login.getPassword()).toCompletableFuture().get());
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-                // @todo roman: do not store password as string but only as char-array due to security reasons (it would stay in the string pool for quite some time)
-                // @laurin: char-array is also in memory + transfer is as a string. Further more does the "string-caching" depend on os and java implementation.
             });
         });
 
@@ -111,24 +109,21 @@ public class EventHandlingController {
         });
 
         listView_MyBackups.setItems(listView_MyBackups_Data);
-        listView_MyBackups.setCellFactory((list) -> {
-            return new ListCell<Backup>() {
-                @Override
-                protected void updateItem(Backup item, boolean empty) {
-                    super.updateItem(item, empty);
+        listView_MyBackups.setCellFactory((list) -> new ListCell<Backup>() {
+            @Override
+            protected void updateItem(Backup item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.getName());
-                    }
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
                 }
-            };
+            }
         });
 
-        listView_MyBackups.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("ListView Selection Changed (selected: " + newValue.toString() + ")");
-        });
+        listView_MyBackups.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+            System.out.println("ListView Selection Changed (selected: " + newValue.toString() + ")"));
         //titledPane_MyBackups.expandedProperty().addListener((obs, oldValue, newValue) -> stage.sizeToScene());
         //titledPane_MyBackups.heightProperty().addListener((obs, oldHeight, newHeight) -> stage.sizeToScene());
         //titledPane_MyFriends.heightProperty().addListener((obs, oldHeight, newHeight) -> stage.sizeToScene());

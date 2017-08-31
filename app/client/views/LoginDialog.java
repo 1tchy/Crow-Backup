@@ -1,38 +1,39 @@
 package client.views;
 
 
+import client.viewmodels.Login;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import models.user.User;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 
-public class LoginDialog extends DialogBase<User> {
+public class LoginDialog extends DialogBase<Login> {
 
-    @Inject
-    private CreateUserDialog createUserDialog;
-    private User user;
+    private final CreateUserDialog createUserDialog;
+    private Login login;
 
     private ButtonType loginButton;
 
-    public LoginDialog() {
+    @Inject
+    public LoginDialog(CreateUserDialog createUserDialog) {
         super("Look, you chan login!");
         super.setTitle("Login");
 
         setButtons();
         setInput();
-        user = new User(null, null);
+        login = new Login();
 
         super.setResultConverter(dialogButton -> {
             if (dialogButton == loginButton) {
-                return user;
+                return login;
             }
             return null;
         });
+        this.createUserDialog = createUserDialog;
     }
 
     private void setButtons() {
@@ -45,7 +46,7 @@ public class LoginDialog extends DialogBase<User> {
 
         TextField username = new TextField();
         username.setPromptText("Username");
-        PasswordField password = new PasswordField();
+        SafePasswordField password = new SafePasswordField();
         password.setPromptText("Password");
         grid.add(new Label("Username:"), 0, 0);
         grid.add(username, 1, 0);
@@ -60,12 +61,12 @@ public class LoginDialog extends DialogBase<User> {
 
         username.textProperty().addListener((observable, oldValue, newValue) -> {
             loginNode.setDisable(!hasText(newValue, password.getText()));
-            user.setMail(newValue);
+            login.setUser(newValue);
         });
 
         password.textProperty().addListener((observable, oldValue, newValue) -> {
             loginNode.setDisable(!hasText(newValue, username.getText()));
-            user.setPasswordHash(newValue);
+            login.setPassword(password.getPassword());
         });
 
         super.getDialogPane().setContent(grid);

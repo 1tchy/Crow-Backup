@@ -3,6 +3,8 @@ package client.logics;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -29,7 +31,16 @@ public class MainApplication extends Application {
         showOverview();
 
         showScene();
+//        primaryStage.close();
     }
+
+    @FXML
+    public void stop() {
+        System.out.println("closing app...");
+        Platform.exit();
+        System.exit(0);
+    }
+
 
 
     private void showScene() {
