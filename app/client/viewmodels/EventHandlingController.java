@@ -87,7 +87,6 @@ public class EventHandlingController {
 
             result.ifPresent(login -> {
                 logger.log(Level.WARNING, "do login with " + login.getUser());
-                //Quick hack to continue development (please feel free to clean up ;-)) //TODO!
                 try {
                     logger.info("Login success: " + userServerConnector.loginAndRemember(login.getUser(), login.getPassword()).toCompletableFuture().get());
                 } catch (InterruptedException | ExecutionException e) {

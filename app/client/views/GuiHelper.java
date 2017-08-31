@@ -1,6 +1,5 @@
 package client.views;
 
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +23,10 @@ public class GuiHelper {
     }
 
     @NotNull
-    public static PasswordField createPasswordField(String id, String promptText) {
-        PasswordField passwordField = new PasswordField();
+    public static SafePasswordField createPasswordField(String id, String promptText) {
+        SafePasswordField passwordField = new SafePasswordField();
         passwordField.setId(id);
         passwordField.setPromptText(promptText);
         return passwordField;
     }
-
 }

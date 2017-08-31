@@ -3,8 +3,18 @@ package client.views;
 import javafx.scene.control.PasswordField;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class SafePasswordField extends PasswordField {
+    private char[] result;
+
+    public SafePasswordField() {
+        result = new char[]{};
+    }
+
+    public void clear() {
+        Arrays.fill(result, (char) 0);
+    }
 
     private char[] getPasswordThrowing() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Content content = getContent();
@@ -13,7 +23,8 @@ public class SafePasswordField extends PasswordField {
         field.setAccessible(true);
 
         StringBuilder stringBuilder = (StringBuilder) field.get(content);
-        char[] result = new char[stringBuilder.length()];
+
+        result = new char[stringBuilder.length()];
         stringBuilder.getChars(0, stringBuilder.length(), result, 0);
 
         return result;

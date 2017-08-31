@@ -1,7 +1,7 @@
 Build Prozess
 =============
 
-Als Buildserver verwenden wir [Teamcity](https://www.jetbrains.com/teamcity/). Der Server und der Client laufen dabei in [Docker](https://www.docker.com/)-Container.
+Als Buildserver verwenden wir [Teamcity](https://www.jetbrains.com/teamcity/). Der Server und der Agent laufen dabei in [Docker](https://www.docker.com/)-Container.
 
 Server
 ------

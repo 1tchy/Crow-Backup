@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractFXTest extends ApplicationTest {
 
-    private static final boolean HEADLESS = true;
+    private static final boolean HEADLESS = false;
     private static final Map<String, String> HEADLESS_PROPERTIES = Collections.unmodifiableMap(Stream.of(
         new AbstractMap.SimpleEntry<>("testfx.robot", "glass"),
         new AbstractMap.SimpleEntry<>("testfx.headless", "true"),

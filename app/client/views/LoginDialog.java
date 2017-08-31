@@ -13,13 +13,13 @@ import java.util.Arrays;
 
 public class LoginDialog extends DialogBase<Login> {
 
-    private final CreateUserDialog createUserDialog;
+    private final SignUpDialog signUpDialog;
     private Login login;
 
     private ButtonType loginButton;
 
     @Inject
-    public LoginDialog(CreateUserDialog createUserDialog) {
+    public LoginDialog(SignUpDialog signUpDialog) {
         super("Look, you chan login!");
         super.setTitle("Login");
 
@@ -33,7 +33,7 @@ public class LoginDialog extends DialogBase<Login> {
             }
             return null;
         });
-        this.createUserDialog = createUserDialog;
+        this.signUpDialog = signUpDialog;
     }
 
     private void setButtons() {
@@ -44,17 +44,15 @@ public class LoginDialog extends DialogBase<Login> {
     private void setInput() {
         GridPane grid = new GridPane();
 
-        TextField username = new TextField();
-        username.setPromptText("Username");
-        SafePasswordField password = new SafePasswordField();
-        password.setPromptText("Password");
+        TextField username = GuiHelper.createTextField("username", "Username");
+        SafePasswordField password = GuiHelper.createPasswordField("password", "Password");
         grid.add(new Label("Username:"), 0, 0);
         grid.add(username, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
         grid.add(password, 1, 1);
         grid.add(new Pane(), 0, 2);
         Button createUserButton = new Button("Create User");
-        createUserButton.setOnAction(e -> createUserDialog.show());
+        createUserButton.setOnAction(e -> signUpDialog.show());
         grid.add(createUserButton, 0, 3);
         Node loginNode = super.getDialogPane().lookupButton(loginButton);
         loginNode.setDisable(true);

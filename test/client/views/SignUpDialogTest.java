@@ -20,27 +20,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
-public class CreateUserDialogTest extends AbstractFXTest {
+public class SignUpDialogTest extends AbstractFXTest {
 
     private static final String EXAMPLE_MAIL = "test@test.com";
     private static final String EXAMPLE_PW = "pw";
     @Mock
     private UserServerConnector userServerConnector;
     @InjectMocks
-    private CreateUserDialog cut;
-    private final CreateUserDialogPage page = new CreateUserDialogPage(this);
+    private SignUpDialog cut;
+    private final SignUpDialogPage page = new SignUpDialogPage(this);
 
     @NotNull
     @Override
     protected Class<? extends Application> getAppClass() {
-        return CreateUserDialogPage.CreateUserDialogApplicationWrapper.class;
+        return SignUpDialogPage.CreateUserDialogApplicationWrapper.class;
     }
 
     @Before
     public void setup() throws Exception {
         Platform.runLater(() -> {
-            MockitoAnnotations.initMocks(CreateUserDialogTest.this);
-            CreateUserDialogPage.CreateUserDialogApplicationWrapper.setCreateUserDialog(cut);
+            MockitoAnnotations.initMocks(SignUpDialogTest.this);
+            SignUpDialogPage.CreateUserDialogApplicationWrapper.setSignUpDialog(cut);
             User user = new User(EXAMPLE_MAIL, null);
             when(userServerConnector.createUser(EXAMPLE_MAIL, EXAMPLE_PW.toCharArray())).thenReturn(CompletableFuture.completedFuture(user));
         });
