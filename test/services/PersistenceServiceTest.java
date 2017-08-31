@@ -16,8 +16,7 @@ public class PersistenceServiceTest extends WithTransaction {
     @Test
     public void test_that_persistGeneratesIds() throws Exception {
         //Arrange
-        User user = new User();
-        user.setMail("test@test.com");
+        User user = new User("test@test.com", null);
         assertEquals(0, user.getId());
         //Act
         persistenceService.persist(user);
@@ -44,8 +43,7 @@ public class PersistenceServiceTest extends WithTransaction {
     @Test
     public void test_that_persistedItemsCanBeFoundAgain() {
         //Arrange
-        User user = new User();
-        user.setMail("test@test.com");
+        User user = new User("test@test.com", null);
         persistenceService.persist(user);
         long id = user.getId();
         //Act
@@ -57,8 +55,7 @@ public class PersistenceServiceTest extends WithTransaction {
     @Test(expected = PersistenceException.class)
     public void test_detach() {
         //Arrange
-        User user = new User();
-        user.setMail("test@test.com");
+        User user = new User("test@test.com", null);
         persistenceService.persist(user);
         //Act
         persistenceService.detach(user);

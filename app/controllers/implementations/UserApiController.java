@@ -32,9 +32,7 @@ public class UserApiController implements UserServerInterface {
     @Override
     public CompletionStage<User> createUser(String mail, char[] password) {
         return persistenceService.asyncWithTransaction(false, () -> {
-            User user = new User();
-            user.setMail(mail);
-            user.setPasswordHash(passwordService.createHash(password));
+            User user = new User(mail, passwordService.createHash(password));
             persistenceService.persist(user);
             return user;
         });

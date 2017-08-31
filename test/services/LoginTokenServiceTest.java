@@ -26,7 +26,7 @@ public class LoginTokenServiceTest extends WithTransaction {
     @Test
     public void test_simple_doSignToken() throws Exception {
         //Arrange
-        User user = GeneralHelpers.setIdForTest(new User(), 42);
+        User user = GeneralHelpers.setIdForTest(new User("test@test.com", null), 42);
         //Act
         String actual = cut.create(user);
         //Assert
@@ -37,7 +37,7 @@ public class LoginTokenServiceTest extends WithTransaction {
     @Test
     public void test_that_doSignToken_alwaysReturnsTheSameForTheSameInput() throws Exception {
         //Arrange
-        User user = new User();
+        User user = new User("test@test.com", null);
         //Act
         String actual1 = cut.create(user);
         String actual2 = cut.create(user);
@@ -48,8 +48,8 @@ public class LoginTokenServiceTest extends WithTransaction {
     @Test
     public void test_that_doSignToken_alwaysReturnsSomethingDifferentForDifferentInput() throws Exception {
         //Arrange
-        User user1 = GeneralHelpers.setIdForTest(new User(), 1);
-        User user2 = GeneralHelpers.setIdForTest(new User(), 2);
+        User user1 = GeneralHelpers.setIdForTest(new User("test1@test.com", null), 1);
+        User user2 = GeneralHelpers.setIdForTest(new User("test2@test.com", null), 2);
         //Act
         String actual1 = cut.create(user1);
         String actual2 = cut.create(user2);

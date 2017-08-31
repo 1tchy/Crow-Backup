@@ -26,8 +26,7 @@ public class FriendshipServerConnectorTest extends AbstractServerConnectorTest {
     @Test
     public void test_create() throws ExecutionException, InterruptedException {
         //Arrange
-        User user = new User();
-        user.setMail("test@example.com");
+        User user = new User("test@example.com", null);
         //Act
         CompletionStage<Void> actualPromise = cut.addFriend(user);
         //Assert
@@ -65,8 +64,7 @@ public class FriendshipServerConnectorTest extends AbstractServerConnectorTest {
     @Test
     public void test_remove() throws ExecutionException, InterruptedException {
         //Arrange
-        User user = new User();
-        user.setMail("test@example.com");
+        User user = new User("test@example.com", null);
         //Act
         CompletionStage<Void> actualPromise = cut.deleteFriend(user);
         //Assert

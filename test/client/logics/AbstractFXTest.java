@@ -1,5 +1,6 @@
 package client.logics;
 
+import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
@@ -51,7 +52,7 @@ public abstract class AbstractFXTest extends ApplicationTest {
     }
 
     @NotNull
-    protected abstract Class<MainApplication> getAppClass();
+    protected abstract Class<? extends Application> getAppClass();
 
     @Override
     public void start(Stage stage) {
@@ -63,6 +64,7 @@ public abstract class AbstractFXTest extends ApplicationTest {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
+        FxToolkit.cleanupStages();
     }
 
 }

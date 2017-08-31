@@ -3,97 +3,80 @@ package client.views;
 import client.logics.connectors.server.implementations.UserServerConnector;
 import com.google.inject.Inject;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import models.user.User;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class CreateUserDialog extends DialogBase<User> {
-    private User user;
-    ButtonType createUserButton;
+    private TextField username;
+    private PasswordField password1;
+    private PasswordField password2;
+    private ButtonType createUserButton;
 
     @Inject
     private UserServerConnector userServerConnector;
 
     public CreateUserDialog() {
-        super();
-        super.setHeader("Create a new user");
-        super.setTitle("new user");
+        super("Create a new user");
+        setTitle("new user");
 
-        setButtons();
-        setInput();
-        user = new User();
+        username = GuiHelper.createTextField("username", "Username");
+        password1 = GuiHelper.createPasswordField("password1", "Password");
+        password2 = GuiHelper.createPasswordField("password2", "Repeated password");
+        createUserButton = new ButtonType("Create user", ButtonBar.ButtonData.OK_DONE);
 
-        super.setResultConverter(dialogButton -> {
+        getDialogPane().getButtonTypes().addAll(createUserButton, ButtonType.CANCEL);
+
+        getDialogPane().setContent(getContent());
+
+        initButton(getDialogPane());
+
+        setResultConverter(dialogButton -> {
             if (dialogButton == createUserButton) {
                 try {
-                    user = userServerConnector.createUser(user.getMail(), user.getPasswordHash().toCharArray()).toCompletableFuture().get();
+                    return userServerConnector.createUser(username.getText(), password1.getText().toCharArray()).toCompletableFuture().get();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
+                    return null;
                 }
-                return user;
             }
             return null;
         });
+
+        Platform.runLater(username::requestFocus);
     }
 
-    private void setButtons() {
-        createUserButton = new ButtonType("Create user", ButtonBar.ButtonData.OK_DONE);
-        super.getDialogPane().getButtonTypes().addAll(createUserButton, ButtonType.CANCEL);
-    }
-
-    private void setInput() {
+    @NotNull
+    private GridPane getContent() {
         GridPane grid = new GridPane();
-
-        TextField username = new TextField();
-        username.setPromptText("Username");
-        PasswordField passwordA = new PasswordField();
-        PasswordField passwordB = new PasswordField();
-        passwordA.setPromptText("Password");
-        passwordB.setPromptText("Repeated password");
 
         grid.add(new Label("Username:"), 0, 0);
         grid.add(username, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
-        grid.add(passwordA, 1, 1);
+        grid.add(password1, 1, 1);
         grid.add(new Label("Repeated password:"), 0, 2);
-        grid.add(passwordB, 1, 2);
-        Node loginNode = super.getDialogPane().lookupButton(createUserButton);
+        grid.add(password2, 1, 2);
+
+        return grid;
+    }
+
+    private void initButton(DialogPane dialogPane) {
+        Node loginNode = dialogPane.lookupButton(createUserButton);
+
         loginNode.setDisable(true);
 
-        username.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginNode.setDisable(!hasText(newValue, passwordA.getText(), passwordB.getText())
-                && !isSame(passwordA.getText(), passwordB.getText()));
-            user.setMail(newValue);
-        });
-
-        passwordA.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginNode.setDisable(!hasText(newValue, passwordB.getText(), username.getText())
-                && !isSame(passwordB.getText(), newValue));
-            user.setPasswordHash(newValue);
-        });
-
-        passwordB.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginNode.setDisable(!hasText(newValue, passwordA.getText(), username.getText())
-                && !isSame(passwordA.getText(), newValue));
-            user.setPasswordHash(newValue);
-        });
-
-        super.getDialogPane().setContent(grid);
-
-        Platform.runLater(username::requestFocus);
-
+        ChangeListener<String> buttonActivator = (observable, oldValue, newValue) -> {
+            boolean isOk = GuiHelper.hasText(username.getText(), password1.getText(), password2.getText()) && GuiHelper.isSame(password1.getText(), password2.getText());
+            loginNode.setDisable(!isOk);
+        };
+        username.textProperty().addListener(buttonActivator);
+        password1.textProperty().addListener(buttonActivator);
+        password2.textProperty().addListener(buttonActivator);
     }
 
-    private boolean hasText(String... texts) {
-        return Arrays.stream(texts).allMatch(s -> s.length() > 0);
-    }
-
-    private boolean isSame(String... texts) {
-        return !Arrays.stream(texts).allMatch(s -> s.length() > 0)
-            && Arrays.stream(texts).distinct().count() == 1;
-    }
 }

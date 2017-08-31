@@ -58,6 +58,8 @@ public class EventHandlingController {
 
     @Inject
     private UserServerConnector userServerConnector;
+    @Inject
+    private LoginDialog loginDialog;
 
     public EventHandlingController() {
         listView_MyBackups_Data.add(new Backup("Fotos", "C:\\Backups\\Fotos.zip", 55, "Daten-Backup"));
@@ -81,8 +83,6 @@ public class EventHandlingController {
         });
 
         button_Login.setOnAction((event) -> {
-            LoginDialog loginDialog = new LoginDialog();
-
             Optional<User> result = loginDialog.showAndWait();
 
             result.ifPresent(login -> {

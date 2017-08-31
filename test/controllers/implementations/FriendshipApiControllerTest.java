@@ -22,8 +22,7 @@ public class FriendshipApiControllerTest extends WithApplication {
         requestWithUser(
             user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
                 return persist(otherUser);
             },
             routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "addFriend"),
@@ -49,8 +48,7 @@ public class FriendshipApiControllerTest extends WithApplication {
     public void test_openRequests_withOneOpenRequest() {
         requestWithUser(user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
                 persist(otherUser, new Friendship(persist(new FriendLink(otherUser, user))));
                 return otherUser;
             }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "openRequests"), "[]",
@@ -64,7 +62,7 @@ public class FriendshipApiControllerTest extends WithApplication {
                 assertFalse(actualJsonElement.get("confirmed").asBoolean());
                 assertTrue(actualJsonElement.get("links").isArray());
                 assertEquals(1, actualJsonElement.get("links").size());
-                assertEquals("tets2@test.com", actualJsonElement.get("links").get(0).get("from").get("mail").asText());
+                assertEquals("test2@test.com", actualJsonElement.get("links").get(0).get("from").get("mail").asText());
                 assertEquals(user.getMail(), actualJsonElement.get("links").get(0).get("to").get("mail").asText());
             }));
     }
@@ -84,8 +82,8 @@ public class FriendshipApiControllerTest extends WithApplication {
     public void test_list_withOneFriendship() {
         requestWithUser(user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
+                otherUser.setMail("test2@test.com");
                 persist(otherUser, new Friendship(persist(new FriendLink(otherUser, user)), persist(new FriendLink(user, otherUser))));
                 return otherUser;
             }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "list"), "[]",
@@ -106,8 +104,7 @@ public class FriendshipApiControllerTest extends WithApplication {
     public void test_delete_withOneFriendship() {
         requestWithUser(user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
                 FriendLink link1 = persist(new FriendLink(otherUser, user));
                 FriendLink link2 = persist(new FriendLink(user, otherUser));
                 Friendship friendship = new Friendship(link1, link2);
@@ -132,8 +129,7 @@ public class FriendshipApiControllerTest extends WithApplication {
     public void test_delete_withOpenRequest() {
         requestWithUser(user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
                 FriendLink link2 = persist(new FriendLink(user, otherUser));
                 Friendship friendship = new Friendship(link2);
                 persist(otherUser, friendship);
@@ -155,8 +151,7 @@ public class FriendshipApiControllerTest extends WithApplication {
     public void test_delete_withoutFriendship() {
         requestWithUser(user -> {
                 //Arrange
-                User otherUser = new User();
-                otherUser.setMail("tets2@test.com");
+                User otherUser = new User("test2@test.com", null);
                 return persist(otherUser);
                 //Act
             }, routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "deleteFriend"), (otherUser) -> Json.stringify(Json.toJson(new User[]{otherUser})),

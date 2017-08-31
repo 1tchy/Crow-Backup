@@ -1,5 +1,6 @@
 package client.logics;
 
+import javafx.application.Application;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class MainApplicationTest extends AbstractFXTest {
 
     @Override
     @NotNull
-    protected Class<MainApplication> getAppClass() {
+    protected Class<? extends Application> getAppClass() {
         return MainApplication.class;
     }
 
