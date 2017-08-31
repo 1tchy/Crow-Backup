@@ -15,7 +15,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.CompletableFuture;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -23,7 +25,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class SignUpDialogTest extends AbstractFXTest {
 
     private static final String EXAMPLE_MAIL = "test@test.com";
-    private static final String EXAMPLE_PW = "pw";
+    private static final char[] EXAMPLE_PW = "pw".toCharArray();
     @Mock
     private UserServerConnector userServerConnector;
     @InjectMocks
@@ -42,7 +44,7 @@ public class SignUpDialogTest extends AbstractFXTest {
             MockitoAnnotations.initMocks(SignUpDialogTest.this);
             SignUpDialogPage.CreateUserDialogApplicationWrapper.setSignUpDialog(cut);
             User user = new User(EXAMPLE_MAIL, null);
-            when(userServerConnector.createUser(EXAMPLE_MAIL, EXAMPLE_PW.toCharArray())).thenReturn(CompletableFuture.completedFuture(user));
+            when(userServerConnector.createUser(EXAMPLE_MAIL, EXAMPLE_PW)).thenReturn(CompletableFuture.completedFuture(user));
         });
         super.setup();
     }
@@ -56,10 +58,11 @@ public class SignUpDialogTest extends AbstractFXTest {
         page.verifyCreateUserButtonIsEnabled();
         verifyThat(((Stage) window(0)).getTitle(), equalTo("new user"));
         //Act 2
-        page.performCreateUser();
+        SignUpDialogPage p = page.performCreateUser();
         //Assert 2
-        verify(userServerConnector).createUser(EXAMPLE_MAIL, EXAMPLE_PW.toCharArray());
+        verify(userServerConnector).createUser(eq(EXAMPLE_MAIL), any(char[].class)); // password is already cleared at this point
     }
+
 
     @Test
     public void test_createUser_when_passwordsDiffer() {
@@ -74,7 +77,7 @@ public class SignUpDialogTest extends AbstractFXTest {
     public void test_createUser_when_emptyPassword() {
         //Arrange
         // Act
-        page.fillCreateUser(EXAMPLE_MAIL, "");
+        page.fillCreateUser(EXAMPLE_MAIL, new char[]{});
         //Assert
         page.verifyCreateUserButtonIsDisabled();
     }

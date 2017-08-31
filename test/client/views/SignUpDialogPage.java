@@ -16,8 +16,8 @@ public class SignUpDialogPage {
         this.driver = driver;
     }
 
-    public SignUpDialogPage fillCreateUser(String mail, String password) {
-        return fillCreateUser(mail, password, password);
+    public SignUpDialogPage fillCreateUser(String mail, char[] password) {
+        return fillCreateUser(mail, new String(password), new String(password));
     }
 
     public SignUpDialogPage fillCreateUser(String mail, String password1, String password2) {
