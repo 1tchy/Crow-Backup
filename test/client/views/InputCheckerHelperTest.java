@@ -1,6 +1,5 @@
 package client.views;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -17,15 +16,6 @@ public class InputCheckerHelperTest {
     @Test
     public void test_hasText_negative() throws Exception {
         String[] input = {"", "b", "c"};
-        boolean hasText = GuiHelper.hasText(input);
-        assertFalse(hasText);
-    }
-
-    @Test
-    @Ignore
-    //TODO Roman, this test is borken. Can you fix or remove it? I (Laurin) do not care what happens in this case.
-    public void test_hasText_empty() throws Exception {
-        String[] input = {};
         boolean hasText = GuiHelper.hasText(input);
         assertFalse(hasText);
     }
