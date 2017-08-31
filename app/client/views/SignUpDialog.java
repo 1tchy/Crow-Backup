@@ -12,16 +12,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 
-public class CreateUserDialog extends DialogBase<User> {
+public class SignUpDialog extends DialogBase<User> {
     private TextField username;
-    private PasswordField password1;
-    private PasswordField password2;
+    private SafePasswordField password1;
+    private SafePasswordField password2;
     private ButtonType createUserButton;
 
     @Inject
     private UserServerConnector userServerConnector;
 
-    public CreateUserDialog() {
+    public SignUpDialog() {
         super("Create a new user");
         setTitle("new user");
 
@@ -39,7 +39,10 @@ public class CreateUserDialog extends DialogBase<User> {
         setResultConverter(dialogButton -> {
             if (dialogButton == createUserButton) {
                 try {
-                    return userServerConnector.createUser(username.getText(), password1.getText().toCharArray()).toCompletableFuture().get();
+                    User result = userServerConnector.createUser(username.getText(), password1.getPassword()).toCompletableFuture().get();
+                    password1.clear();
+                    password2.clear();
+                    return result;
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                     return null;

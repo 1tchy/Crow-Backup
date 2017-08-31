@@ -9,23 +9,23 @@ import java.util.function.Predicate;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("UnusedReturnValue")
-public class CreateUserDialogPage {
+public class SignUpDialogPage {
     private final AbstractFXTest driver;
 
-    public CreateUserDialogPage(AbstractFXTest driver) {
+    public SignUpDialogPage(AbstractFXTest driver) {
         this.driver = driver;
     }
 
-    public CreateUserDialogPage fillCreateUser(String mail, String password) {
-        return fillCreateUser(mail, password, password);
+    public SignUpDialogPage fillCreateUser(String mail, char[] password) {
+        return fillCreateUser(mail, new String(password), new String(password));
     }
 
-    public CreateUserDialogPage fillCreateUser(String mail, String password1, String password2) {
+    public SignUpDialogPage fillCreateUser(String mail, String password1, String password2) {
         driver.write(mail).type(KeyCode.TAB).write(password1).type(KeyCode.TAB).write(password2);
         return this;
     }
 
-    public CreateUserDialogPage performCreateUser() {
+    public SignUpDialogPage performCreateUser() {
         driver.clickOn("Create user");
         return this;
     }
@@ -49,16 +49,16 @@ public class CreateUserDialogPage {
         assertTrue(predicate.test(driver.lookup("Create user").query()));
     }
 
-    public static class CreateUserDialogApplicationWrapper extends FXDialogApplicationWrapper<CreateUserDialog> {
-        private static CreateUserDialog createUserDialog;
+    public static class CreateUserDialogApplicationWrapper extends FXDialogApplicationWrapper<SignUpDialog> {
+        private static SignUpDialog signUpDialog;
 
         @Override
-        CreateUserDialog createDialog() {
-            return createUserDialog;
+        SignUpDialog createDialog() {
+            return signUpDialog;
         }
 
-        public static void setCreateUserDialog(CreateUserDialog createUserDialog) {
-            CreateUserDialogApplicationWrapper.createUserDialog = createUserDialog;
+        public static void setSignUpDialog(SignUpDialog signUpDialog) {
+            CreateUserDialogApplicationWrapper.signUpDialog = signUpDialog;
         }
     }
 }

@@ -1,38 +1,39 @@
 package client.views;
 
 
+import client.viewmodels.Login;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import models.user.User;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 
-public class LoginDialog extends DialogBase<User> {
+public class LoginDialog extends DialogBase<Login> {
 
-    @Inject
-    private CreateUserDialog createUserDialog;
-    private User user;
+    private final SignUpDialog signUpDialog;
+    private Login login;
 
     private ButtonType loginButton;
 
-    public LoginDialog() {
+    @Inject
+    public LoginDialog(SignUpDialog signUpDialog) {
         super("Look, you chan login!");
         super.setTitle("Login");
 
         setButtons();
         setInput();
-        user = new User(null, null);
+        login = new Login();
 
         super.setResultConverter(dialogButton -> {
             if (dialogButton == loginButton) {
-                return user;
+                return login;
             }
             return null;
         });
+        this.signUpDialog = signUpDialog;
     }
 
     private void setButtons() {
@@ -43,29 +44,27 @@ public class LoginDialog extends DialogBase<User> {
     private void setInput() {
         GridPane grid = new GridPane();
 
-        TextField username = new TextField();
-        username.setPromptText("Username");
-        PasswordField password = new PasswordField();
-        password.setPromptText("Password");
+        TextField username = GuiHelper.createTextField("username", "Username");
+        SafePasswordField password = GuiHelper.createPasswordField("password", "Password");
         grid.add(new Label("Username:"), 0, 0);
         grid.add(username, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
         grid.add(password, 1, 1);
         grid.add(new Pane(), 0, 2);
         Button createUserButton = new Button("Create User");
-        createUserButton.setOnAction(e -> createUserDialog.show());
+        createUserButton.setOnAction(e -> signUpDialog.show());
         grid.add(createUserButton, 0, 3);
         Node loginNode = super.getDialogPane().lookupButton(loginButton);
         loginNode.setDisable(true);
 
         username.textProperty().addListener((observable, oldValue, newValue) -> {
             loginNode.setDisable(!hasText(newValue, password.getText()));
-            user.setMail(newValue);
+            login.setUser(newValue);
         });
 
         password.textProperty().addListener((observable, oldValue, newValue) -> {
             loginNode.setDisable(!hasText(newValue, username.getText()));
-            user.setPasswordHash(newValue);
+            login.setPassword(password.getPassword());
         });
 
         super.getDialogPane().setContent(grid);
