@@ -29,6 +29,7 @@ public class AbstractServerConnector {
         serverAuthentication.getAuthenticationToken().ifPresent(request::setAuth);
         request.setBody(Json.toJson(param));
         request.setMethod(call.method());
+        request.addHeader("Csrf-Token", "nocheck");
         return request.execute().thenApply(
             wsResponse -> {
                 switch (wsResponse.getStatus()) {
@@ -36,6 +37,8 @@ public class AbstractServerConnector {
                         return null;
                     case Http.Status.NOT_FOUND:
                         throw new RuntimeException(method + " not found under " + url);
+                    case Http.Status.FORBIDDEN:
+                        throw new RuntimeException("not allowed to call " + method + "; are you logged in?");
                     default:
                         return wsResponse.asJson();
                 }
