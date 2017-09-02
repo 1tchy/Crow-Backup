@@ -1,6 +1,7 @@
 package client.logics.connectors.server;
 
 import client.logics.connectors.server.implementations.UserServerConnector;
+import controllers.actions.WithUserAction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +33,7 @@ public class UserServerConnectorTest extends AbstractServerConnectorTest {
         //Act
         cut.getCurrentUser();
         //Assert
-        verify(request).setAuth(token);
+        verify(request).addHeader(WithUserAction.AUTHENTICATION_HEADER_NAME, token);
     }
 
     @Test
@@ -42,7 +44,7 @@ public class UserServerConnectorTest extends AbstractServerConnectorTest {
         //Act
         cut.logout();
         //Assert
-        verify(request).setAuth(anyString());
+        verify(request).addHeader(eq(WithUserAction.AUTHENTICATION_HEADER_NAME), anyString());
     }
 
     @Test
@@ -53,7 +55,7 @@ public class UserServerConnectorTest extends AbstractServerConnectorTest {
         //Act
         cut.getCurrentUser();
         //Assert
-        verify(request, never()).setAuth(anyString());
+        verify(request, never()).addHeader(eq(WithUserAction.AUTHENTICATION_HEADER_NAME), anyString());
     }
 
     @Test
@@ -65,7 +67,7 @@ public class UserServerConnectorTest extends AbstractServerConnectorTest {
         //Act
         CompletionStage<Void> actual = cut.changeUserPassword("5678".toCharArray());
         //Assert
-        verify(request).setAuth(anyString());
+        verify(request).addHeader(eq(WithUserAction.AUTHENTICATION_HEADER_NAME), anyString());
         assertNull(actual.toCompletableFuture().get());
     }
 

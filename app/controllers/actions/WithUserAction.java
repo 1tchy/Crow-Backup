@@ -17,6 +17,7 @@ import java.util.function.Function;
  */
 public class WithUserAction extends Action.Simple implements ExplicitAction {
 
+    public static final String AUTHENTICATION_HEADER_NAME = "Authentication";
     private final LoginTokenService loginTokenService;
 
     @Inject
@@ -37,7 +38,7 @@ public class WithUserAction extends Action.Simple implements ExplicitAction {
      */
     @Override
     public CompletionStage<Result> call(Http.Context ctx, Function<Http.Context, CompletionStage<Result>> callable) {
-        Optional<String> authentication = ctx.request().header("Authentication");
+        Optional<String> authentication = ctx.request().header(AUTHENTICATION_HEADER_NAME);
         if (!authentication.isPresent()) {
             return forbiddenPromise("Authentication-Header fehlt");
         }

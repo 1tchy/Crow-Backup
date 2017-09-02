@@ -1,5 +1,6 @@
 package client.logics.connectors.server;
 
+import controllers.actions.WithUserAction;
 import controllers.routes;
 import play.api.mvc.Call;
 import play.libs.Json;
@@ -26,7 +27,7 @@ public class AbstractServerConnector {
         String url = call.absoluteURL(false, "localhost:9000");
         WSRequest request = ws.url(url);
         request.setContentType("application/json");
-        serverAuthentication.getAuthenticationToken().ifPresent(request::setAuth);
+        serverAuthentication.getAuthenticationToken().ifPresent(userInfo -> request.addHeader(WithUserAction.AUTHENTICATION_HEADER_NAME, userInfo));
         request.setBody(Json.toJson(param));
         request.setMethod(call.method());
         request.addHeader("Csrf-Token", "nocheck");
