@@ -1,13 +1,10 @@
 package client.logics;
 
-import javafx.application.Application;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
+import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.mockito.MockitoAnnotations;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -46,24 +43,16 @@ public abstract class AbstractFXTest extends ApplicationTest {
         }
     }
 
-    @Before
-    public void setup() throws Exception {
-        launch(getAppClass());
-    }
-
-    @NotNull
-    protected abstract Class<? extends Application> getAppClass();
-
     @Override
-    public void start(Stage stage) {
-        stage.show();
+    public final void start(Stage stage) throws Exception {
+        MockitoAnnotations.initMocks(this);
+        Platform.runLater(() -> doStart(stage));
     }
+
+    protected abstract void doStart(Stage stage);
 
     @After
     public void tearDown() throws TimeoutException {
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
         FxToolkit.cleanupStages();
     }
 

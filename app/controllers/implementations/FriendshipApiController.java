@@ -9,6 +9,7 @@ import play.mvc.Controller;
 import services.FriendshipService;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class FriendshipApiController implements FriendshipServerInterface {
@@ -18,6 +19,26 @@ public class FriendshipApiController implements FriendshipServerInterface {
     @Inject
     public FriendshipApiController(FriendshipService friendshipService) {
         this.friendshipService = friendshipService;
+    }
+
+    @Override
+    @WithUser
+    public CompletionStage<User> findFriend(String mail) {
+        return delay(friendshipService.findFriend(mail));
+    }
+
+    /**
+     * Used to slow down brute force attacks
+     */
+    private static <T> CompletableFuture<T> delay(CompletionStage<T> completionStage) {
+        return CompletableFuture.runAsync(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        ).thenComposeAsync((ignored) -> completionStage);
     }
 
     @Override

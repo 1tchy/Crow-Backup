@@ -41,6 +41,8 @@ public class EventHandlingController {
     private Button button_Settings;
     @FXML
     private Button button_Login;
+    @FXML
+    private Button button_AddFriend;
 
     @FXML
     private TitledPane titledPane_MyBackups;
@@ -60,6 +62,8 @@ public class EventHandlingController {
     private UserServerConnector userServerConnector;
     @Inject
     private LoginDialog loginDialog;
+    @Inject
+    private AddFriendDialogController addFriendDialogController;
 
     public EventHandlingController() {
         listView_MyBackups_Data.add(new Backup("Fotos", "C:\\Backups\\Fotos.zip", 55, "Daten-Backup"));
@@ -94,6 +98,8 @@ public class EventHandlingController {
                 }
             });
         });
+
+        button_AddFriend.setOnAction((event -> addFriendDialogController.show()));
 
         button_Settings.setOnAction((event) -> {
             Alert alert = new Alert(AlertType.INFORMATION);

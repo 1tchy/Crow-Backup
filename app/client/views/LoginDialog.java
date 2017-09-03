@@ -4,7 +4,9 @@ package client.views;
 import client.viewmodels.Login;
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -16,29 +18,20 @@ public class LoginDialog extends DialogBase<Login> {
     private final SignUpDialog signUpDialog;
     private Login login;
 
-    private ButtonType loginButton;
-
     @Inject
     public LoginDialog(SignUpDialog signUpDialog) {
-        super("Look, you chan login!");
-        super.setTitle("Login");
+        super("Login", "Look, you chan login!", "Login");
 
-        setButtons();
         setInput();
         login = new Login();
 
         super.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButton) {
+            if (dialogButton == okButtonType) {
                 return login;
             }
             return null;
         });
         this.signUpDialog = signUpDialog;
-    }
-
-    private void setButtons() {
-        loginButton = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
-        super.getDialogPane().getButtonTypes().addAll(loginButton, ButtonType.CANCEL);
     }
 
     private void setInput() {
@@ -54,16 +47,16 @@ public class LoginDialog extends DialogBase<Login> {
         Button createUserButton = new Button("Create User");
         createUserButton.setOnAction(e -> signUpDialog.show());
         grid.add(createUserButton, 0, 3);
-        Node loginNode = super.getDialogPane().lookupButton(loginButton);
-        loginNode.setDisable(true);
+        Node okButton = super.getDialogPane().lookupButton(okButtonType);
+        okButton.setDisable(true);
 
         username.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginNode.setDisable(!hasText(newValue, password.getText()));
+            okButton.setDisable(!hasText(newValue, password.getText()));
             login.setUser(newValue);
         });
 
         password.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginNode.setDisable(!hasText(newValue, username.getText()));
+            okButton.setDisable(!hasText(newValue, username.getText()));
             login.setPassword(password.getPassword());
         });
 

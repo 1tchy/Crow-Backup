@@ -16,12 +16,22 @@
     -fx-background-insets: 0, 1pt, 2pt, 0;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
     -fx-font-family: "Arial";
-    -fx-font-size: 12pt;
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-padding: 10pt 20pt 10pt 20pt;
     -fx-max-height: 40pt;
     -fx-min-height: 40pt;
     -fx-pref-height: 40pt;
+}
+
+.circled {
+    -fx-background-radius: 50%;
+    -fx-max-height: 30pt;
+    -fx-min-height: 30pt;
+    -fx-pref-height: 30pt;
+    -fx-max-width: 30pt;
+    -fx-min-width: 30pt;
+    -fx-pref-width: 30pt;
+    -fx-padding: 0;
 }
 
 .button .text {
