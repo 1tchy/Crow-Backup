@@ -21,4 +21,17 @@ public class GeneralHelpers {
         idField.set(entity, id);
         return entity;
     }
+
+    public static void awaitNoAssertionError(Runnable runnable) {
+        long start = System.currentTimeMillis();
+        while (start + 2000 > System.currentTimeMillis()) {
+            try {
+                runnable.run();
+                return;
+            } catch (AssertionError ignore) {
+                Thread.yield();
+            }
+        }
+        runnable.run();
+    }
 }
