@@ -19,6 +19,11 @@ public class FriendshipServerConnector extends AbstractServerConnector implement
     }
 
     @Override
+    public CompletionStage<User> findFriend(String mail) {
+        return apiCall(User.class, mail);
+    }
+
+    @Override
     public CompletionStage<Void> addFriend(User user) {
         return apiCall(Void.class, user);
     }

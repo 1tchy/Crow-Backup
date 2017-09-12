@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import models.user.User;
 import org.jetbrains.annotations.NotNull;
@@ -16,28 +18,23 @@ public class SignUpDialog extends DialogBase<User> {
     private TextField username;
     private SafePasswordField password1;
     private SafePasswordField password2;
-    private ButtonType createUserButton;
 
     @Inject
     private UserServerConnector userServerConnector;
 
     public SignUpDialog() {
-        super("Create a new user");
-        setTitle("new user");
+        super("Registrieren", "Create a new user", "Create user");
 
         username = GuiHelper.createTextField("username", "Username");
         password1 = GuiHelper.createPasswordField("password1", "Password");
         password2 = GuiHelper.createPasswordField("password2", "Repeated password");
-        createUserButton = new ButtonType("Create user", ButtonBar.ButtonData.OK_DONE);
-
-        getDialogPane().getButtonTypes().addAll(createUserButton, ButtonType.CANCEL);
 
         getDialogPane().setContent(getContent());
 
         initButton(getDialogPane());
 
         setResultConverter(dialogButton -> {
-            if (dialogButton == createUserButton) {
+            if (dialogButton == okButtonType) {
                 try {
                     User result = userServerConnector.createUser(username.getText(), password1.getPassword()).toCompletableFuture().get();
                     password1.clear();
@@ -69,13 +66,13 @@ public class SignUpDialog extends DialogBase<User> {
     }
 
     private void initButton(DialogPane dialogPane) {
-        Node loginNode = dialogPane.lookupButton(createUserButton);
+        Node okButton = dialogPane.lookupButton(okButtonType);
 
-        loginNode.setDisable(true);
+        okButton.setDisable(true);
 
         ChangeListener<String> buttonActivator = (observable, oldValue, newValue) -> {
             boolean isOk = GuiHelper.hasText(username.getText(), password1.getText(), password2.getText()) && GuiHelper.isSame(password1.getText(), password2.getText());
-            loginNode.setDisable(!isOk);
+            okButton.setDisable(!isOk);
         };
         username.textProperty().addListener(buttonActivator);
         password1.textProperty().addListener(buttonActivator);

@@ -1,5 +1,6 @@
 package client.logics.connectors.server;
 
+import controllers.actions.WithUserAction;
 import controllers.routes;
 import play.api.mvc.Call;
 import play.libs.Json;
@@ -26,9 +27,10 @@ public class AbstractServerConnector {
         String url = call.absoluteURL(false, "localhost:9000");
         WSRequest request = ws.url(url);
         request.setContentType("application/json");
-        serverAuthentication.getAuthenticationToken().ifPresent(request::setAuth);
+        serverAuthentication.getAuthenticationToken().ifPresent(userInfo -> request.addHeader(WithUserAction.AUTHENTICATION_HEADER_NAME, userInfo));
         request.setBody(Json.toJson(param));
         request.setMethod(call.method());
+        request.addHeader("Csrf-Token", "nocheck");
         return request.execute().thenApply(
             wsResponse -> {
                 switch (wsResponse.getStatus()) {
@@ -36,6 +38,8 @@ public class AbstractServerConnector {
                         return null;
                     case Http.Status.NOT_FOUND:
                         throw new RuntimeException(method + " not found under " + url);
+                    case Http.Status.FORBIDDEN:
+                        throw new RuntimeException("not allowed to call " + method + "; are you logged in?");
                     default:
                         return wsResponse.asJson();
                 }

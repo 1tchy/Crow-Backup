@@ -2,16 +2,12 @@ package client.views;
 
 import client.logics.AbstractFXTest;
 import client.logics.connectors.server.implementations.UserServerConnector;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import models.user.User;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -32,21 +28,14 @@ public class SignUpDialogTest extends AbstractFXTest {
     private SignUpDialog cut;
     private final SignUpDialogPage page = new SignUpDialogPage(this);
 
-    @NotNull
     @Override
-    protected Class<? extends Application> getAppClass() {
-        return SignUpDialogPage.CreateUserDialogApplicationWrapper.class;
+    public void doStart(Stage stage) {
+        cut.show();
     }
 
     @Before
     public void setup() throws Exception {
-        Platform.runLater(() -> {
-            MockitoAnnotations.initMocks(SignUpDialogTest.this);
-            SignUpDialogPage.CreateUserDialogApplicationWrapper.setSignUpDialog(cut);
-            User user = new User(EXAMPLE_MAIL, null);
-            when(userServerConnector.createUser(EXAMPLE_MAIL, EXAMPLE_PW)).thenReturn(CompletableFuture.completedFuture(user));
-        });
-        super.setup();
+        when(userServerConnector.createUser(EXAMPLE_MAIL, EXAMPLE_PW)).thenReturn(CompletableFuture.completedFuture(new User(EXAMPLE_MAIL, null)));
     }
 
     @Test
@@ -56,7 +45,7 @@ public class SignUpDialogTest extends AbstractFXTest {
         page.fillCreateUser(EXAMPLE_MAIL, EXAMPLE_PW);
         //Assert 1
         page.verifyCreateUserButtonIsEnabled();
-        verifyThat(((Stage) window(0)).getTitle(), equalTo("new user"));
+        verifyThat(((Stage) window(0)).getTitle(), equalTo("Registrieren"));
         //Act 2
         SignUpDialogPage p = page.performCreateUser();
         //Assert 2

@@ -1,6 +1,7 @@
 package helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.actions.WithUserAction;
 import models.user.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,7 +55,7 @@ public class WithApplication {
 
     protected static Result simulateJsonRequest(Call target, String json, String authenticatedUserId) {
         Http.RequestBuilder requestBuilder = new Http.RequestBuilder().bodyJson(Json.parse(json));
-        requestBuilder.header("Authentication", app.injector().instanceOf(LoginTokenService.class).create(authenticatedUserId));
+        requestBuilder.header(WithUserAction.AUTHENTICATION_HEADER_NAME, app.injector().instanceOf(LoginTokenService.class).create(authenticatedUserId));
         return route(app, requestBuilder.method(target.method()).uri(target.url()));
     }
 

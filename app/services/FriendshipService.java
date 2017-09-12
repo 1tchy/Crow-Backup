@@ -17,6 +17,10 @@ public class FriendshipService {
         this.persistenceService = persistenceService;
     }
 
+    public CompletionStage<User> findFriend(String mail) {
+        return persistenceService.asyncWithTransaction(true, () -> persistenceService.readOne(User.class, "SELECT u FROM User u WHERE u.mail = ?1", mail).orElse(null));
+    }
+
     public CompletionStage<Void> createFriendshipWithTransaction(User fromUser, long toUserId) {
         return persistenceService.asyncWithTransaction(() -> {
             User toUser = persistenceService.readUnique(User.class, toUserId);
@@ -53,9 +57,8 @@ public class FriendshipService {
     public CompletionStage<Friendship[]> listForUserWithTransaction(User user, boolean confirmed) {
         return persistenceService.asyncWithTransaction(false, () -> {
             String query = "SELECT f FROM Friendship AS f JOIN f.links AS l WHERE l.to = ?1 AND SIZE(f.links) = " + (confirmed ? 2 : 1);
-            return persistenceService.read(Friendship.class, query, null, user).stream().map(friendship -> {
+            return persistenceService.read(Friendship.class, query, null, user).stream().peek(friendship -> {
                 friendship.getLinks().size();//eager loading links
-                return friendship;
             }).toArray(Friendship[]::new);
         });
     }

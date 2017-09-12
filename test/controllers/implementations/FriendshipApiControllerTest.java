@@ -18,6 +18,37 @@ import static play.test.Helpers.contentAsString;
 public class FriendshipApiControllerTest extends WithApplication {
 
     @Test
+    public void test_simple_findFriend() {
+        requestWithUser(
+            user -> {
+                //Arrange
+                User otherUser = new User("test2@test.com", null);
+                return persist(otherUser);
+            },
+            routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "findFriend"),
+            otherUser -> "[\"" + otherUser.getMail() + "\"]",
+            ((user, otherUser, result) -> {
+                //Assert
+                assertEquals(Http.Status.OK, result.status());
+                JsonNode json = contentAsJson(result);
+                assertTrue(json.get("id").isNumber());
+                assertEquals(otherUser.getMail(), json.get("mail").asText());
+            }));
+    }
+
+    @Test
+    public void test_findFriend_when_noFriendWithMailExists() {
+        requestWithUser(
+
+            routes.BaseApiController.apiCall(FriendshipServerInterface.class.getSimpleName(), "findFriend"),
+            "[\"unknown@test.com\"]",
+            ((user, result) -> {
+                //Assert
+                assertEquals(Http.Status.NO_CONTENT, result.status());
+            }));
+    }
+
+    @Test
     public void test_simple_createUser() {
         requestWithUser(
             user -> {

@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("UnusedReturnValue")
 public class SignUpDialogPage {
+    private static final String CREATE_USER_BUTTON = "Create user";
     private final AbstractFXTest driver;
 
     public SignUpDialogPage(AbstractFXTest driver) {
@@ -26,7 +27,7 @@ public class SignUpDialogPage {
     }
 
     public SignUpDialogPage performCreateUser() {
-        driver.clickOn("Create user");
+        driver.clickOn(CREATE_USER_BUTTON);
         return this;
     }
 
@@ -41,24 +42,11 @@ public class SignUpDialogPage {
     private void retryVerifyCreateUserButton(Predicate<Node> predicate) {
         long start = System.currentTimeMillis();
         while (System.currentTimeMillis() > start + 5000) {
-            if (predicate.test(driver.lookup("Create user").query())) {
+            if (predicate.test(driver.lookup(CREATE_USER_BUTTON).query())) {
                 break;
             }
             Thread.yield();
         }
-        assertTrue(predicate.test(driver.lookup("Create user").query()));
-    }
-
-    public static class CreateUserDialogApplicationWrapper extends FXDialogApplicationWrapper<SignUpDialog> {
-        private static SignUpDialog signUpDialog;
-
-        @Override
-        SignUpDialog createDialog() {
-            return signUpDialog;
-        }
-
-        public static void setSignUpDialog(SignUpDialog signUpDialog) {
-            CreateUserDialogApplicationWrapper.signUpDialog = signUpDialog;
-        }
+        assertTrue(predicate.test(driver.lookup(CREATE_USER_BUTTON).query()));
     }
 }

@@ -15,23 +15,27 @@ import java.io.IOException;
 
 public class MainApplication extends Application {
 
-    private Stage primaryStage;
     private BorderPane rootLayout;
-    private Injector injector;
+    private final Injector injector;
+
+    public MainApplication() {
+        this(Guice.createInjector(new ClientModule()));
+    }
+
+    public MainApplication(Injector injector) {
+        this.injector = injector;
+    }
 
     @Override
     public void start(Stage primaryStage) {
-        injector = Guice.createInjector(new ClientModule());
+        primaryStage.setTitle("Crow Backup");
 
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Crow Backup");
-
-        initRootLayout();
+        rootLayout = load("/client/views/RootLayout.fxml");
 
         showOverview();
 
-        showScene();
-//        primaryStage.close();
+        primaryStage.setScene(new Scene(rootLayout));
+        primaryStage.show();
     }
 
     @FXML
@@ -41,24 +45,9 @@ public class MainApplication extends Application {
         System.exit(0);
     }
 
-
-
-    private void showScene() {
-        Scene scene = new Scene(rootLayout);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    /**
-     * Initializes the root layout.
-     */
-    private void initRootLayout() {
-        rootLayout = load("/client/views/RootLayout.fxml");
-    }
-
     private <T> T load(String fxmlResource) {
         FXMLLoader loader = new FXMLLoader();
-        loader.setControllerFactory(instantiatedClass -> injector.getInstance(instantiatedClass));
+        loader.setControllerFactory(injector::getInstance);
         loader.setLocation(MainApplication.class.getResource(fxmlResource));
         try {
             try {
