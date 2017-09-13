@@ -30,6 +30,8 @@ public abstract class AbstractFXTest extends ApplicationTest {
     @BeforeClass
     public static void initHeadlessMode() {
         setHeadlessMode(HEADLESS);
+        System.out.println("securityManager = " + System.getSecurityManager());
+        System.setSecurityManager(null);
     }
 
     @SuppressWarnings("WeakerAccess") //for easier switch during development protected
