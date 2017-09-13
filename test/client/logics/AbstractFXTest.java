@@ -3,6 +3,7 @@ package client.logics;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.mockito.MockitoAnnotations;
 import org.testfx.api.FxToolkit;
@@ -26,12 +27,18 @@ public abstract class AbstractFXTest extends ApplicationTest {
         new AbstractMap.SimpleEntry<>("prism.text", "t2k"),
         new AbstractMap.SimpleEntry<>("java.awt.headless", "true"))
         .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
+    private static SecurityManager defaultSecurityManager;
 
     @BeforeClass
-    public static void initHeadlessMode() {
+    public static void configureGuiTests() {
         setHeadlessMode(HEADLESS);
-        System.out.println("securityManager = " + System.getSecurityManager());
+        defaultSecurityManager = System.getSecurityManager();
         System.setSecurityManager(null);
+    }
+
+    @AfterClass
+    public static void resetConfiguration() {
+        System.setSecurityManager(defaultSecurityManager);
     }
 
     @SuppressWarnings("WeakerAccess") //for easier switch during development protected
